@@ -1,0 +1,186 @@
+# Translation of Wland Chat iA in Spanish (Spain)
+# This file is distributed under the same license as the Wland Chat iA package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Wland Chat iA 1.0.0\n"
+"Report-Msgid-Bugs-To: https://weblandia.es\n"
+"POT-Creation-Date: 2025-01-01 00:00:00+00:00\n"
+"PO-Revision-Date: 2025-01-15 12:00+0100\n"
+"Last-Translator: Carlos Vera <carlos@braveslab.com>\n"
+"Language-Team: Spanish <es@weblandia.es>\n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.4\n"
+
+#: wland-chat-ia.php
+msgid "Ajustes"
+msgstr "Ajustes"
+
+#: includes/class-settings.php
+msgid "Wland Chat iA"
+msgstr "Wland Chat iA"
+
+msgid "Configuración General"
+msgstr "Configuración General"
+
+msgid "Configure los ajustes generales del chat."
+msgstr "Configure los ajustes generales del chat."
+
+msgid "URL del Webhook"
+msgstr "URL del Webhook"
+
+msgid "URL del webhook de N8N para procesar los mensajes."
+msgstr "URL del webhook de N8N para procesar los mensajes."
+
+msgid "Título del Header"
+msgstr "Título de la Cabecera"
+
+msgid "Subtítulo del Header"
+msgstr "Subtítulo de la Cabecera"
+
+msgid "Mensaje de Bienvenida"
+msgstr "Mensaje de Bienvenida"
+
+msgid "Posición del Chat"
+msgstr "Posición del Chat"
+
+msgid "Abajo Derecha"
+msgstr "Abajo Derecha"
+
+msgid "Abajo Izquierda"
+msgstr "Abajo Izquierda"
+
+msgid "Centro"
+msgstr "Centro"
+
+msgid "Modo de Visualización"
+msgstr "Modo de Visualización"
+
+msgid "Modal (Ventana emergente)"
+msgstr "Modal (Ventana emergente)"
+
+msgid "Pantalla completa"
+msgstr "Pantalla completa"
+
+msgid "Páginas Excluidas"
+msgstr "Páginas Excluidas"
+
+msgid "Seleccione las páginas donde NO desea mostrar el widget de chat."
+msgstr "Seleccione las páginas donde NO desea mostrar el widget de chat."
+
+msgid "Páginas donde NO mostrar el chat"
+msgstr "Páginas donde NO mostrar el chat"
+
+msgid "Mantenga presionado Ctrl (Cmd en Mac) para seleccionar múltiples páginas."
+msgstr "Mantenga presionado Ctrl (Cmd en Mac) para seleccionar múltiples páginas."
+
+msgid "Horarios de Disponibilidad"
+msgstr "Horarios de Disponibilidad"
+
+msgid "Configure los horarios de disponibilidad del chat."
+msgstr "Configure los horarios de disponibilidad del chat."
+
+msgid "Habilitar Horarios"
+msgstr "Habilitar Horarios"
+
+msgid "Activar restricción por horarios"
+msgstr "Activar restricción por horarios"
+
+msgid "Hora de Inicio"
+msgstr "Hora de Inicio"
+
+msgid "Hora de Fin"
+msgstr "Hora de Fin"
+
+msgid "Zona Horaria"
+msgstr "Zona Horaria"
+
+msgid "Mensaje Fuera de Horario"
+msgstr "Mensaje Fuera de Horario"
+
+msgid "Nuestro horario de atención es de 9:00 a 18:00. Déjanos tu mensaje y te responderemos lo antes posible."
+msgstr "Nuestro horario de atención es de 9:00 a 18:00. Déjanos tu mensaje y te responderemos lo antes posible."
+
+msgid "Guardar Cambios"
+msgstr "Guardar Cambios"
+
+msgid "Configuración guardada correctamente."
+msgstr "Configuración guardada correctamente."
+
+msgid "Configure el widget de chat con IA de BravesLab para su sitio web."
+msgstr "Configure el widget de chat con IA de BravesLab para su sitio web."
+
+msgid "Versión %s | Desarrollado por %s"
+msgstr "Versión %s | Desarrollado por %s"
+
+msgid "BravesLab AI Assistant"
+msgstr "Asistente IA de BravesLab"
+
+msgid "Artificial Intelligence Marketing Agency"
+msgstr "Agencia de Marketing con Inteligencia Artificial"
+
+msgid "¡Hola! Soy el asistente de BravesLab, tu Artificial Intelligence Marketing Agency. Integramos IA en empresas para multiplicar resultados. ¿Cómo podemos ayudarte?"
+msgstr "¡Hola! Soy el asistente de BravesLab, tu Agencia de Marketing con Inteligencia Artificial. Integramos IA en empresas para multiplicar resultados. ¿Cómo podemos ayudarte?"
+
+#: includes/class-customizer.php
+msgid "Personalice la apariencia y comportamiento del chat con IA."
+msgstr "Personalice la apariencia y comportamiento del chat con IA."
+
+msgid "Apariencia"
+msgstr "Apariencia"
+
+msgid "Comportamiento"
+msgstr "Comportamiento"
+
+msgid "Habilitar Horarios de Disponibilidad"
+msgstr "Habilitar Horarios de Disponibilidad"
+
+msgid "URL del webhook de N8N para procesar mensajes."
+msgstr "URL del webhook de N8N para procesar mensajes."
+
+#: includes/class-block.php
+msgid "Widget de chat con IA de BravesLab"
+msgstr "Widget de chat con IA de BravesLab"
+
+msgid "chat"
+msgstr "chat"
+
+msgid "ia"
+msgstr "ia"
+
+msgid "asistente"
+msgstr "asistente"
+
+msgid "Configuración del Chat"
+msgstr "Configuración del Chat"
+
+msgid "URL del webhook de N8N"
+msgstr "URL del webhook de N8N"
+
+msgid "Posición:"
+msgstr "Posición:"
+
+msgid "Modal"
+msgstr "Modal"
+
+msgid "Pantalla Completa"
+msgstr "Pantalla Completa"
+
+#: templates/modal.php, templates/screen.php
+msgid "Habla con nuestro asistente IA"
+msgstr "Habla con nuestro asistente IA"
+
+msgid "Cerrar chat"
+msgstr "Cerrar chat"
+
+msgid "Escribe tu mensaje..."
+msgstr "Escribe tu mensaje..."
+
+msgid "Escribe tu mensaje"
+msgstr "Escribe tu mensaje"
+
+msgid "Enviar mensaje"
+msgstr "Enviar mensaje"

@@ -1,0 +1,202 @@
+/**
+ * Estilos del panel de administración
+ * 
+ * @package WlandChat
+ */
+
+/* Header del admin */
+.wland-chat-admin-header {
+    background: linear-gradient(135deg, #01B7AF 0%, #5DD5C7 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(1, 183, 175, 0.2);
+}
+
+.wland-chat-admin-header p {
+    margin: 0;
+    font-size: 15px;
+    opacity: 0.95;
+}
+
+/* Secciones de configuración */
+.form-table th {
+    padding: 20px 10px 20px 0;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.form-table td {
+    padding: 15px 10px;
+}
+
+/* Inputs mejorados */
+.form-table input[type="text"],
+.form-table input[type="url"],
+.form-table input[type="time"],
+.form-table textarea,
+.form-table select {
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.form-table input[type="text"]:focus,
+.form-table input[type="url"]:focus,
+.form-table input[type="time"]:focus,
+.form-table textarea:focus,
+.form-table select:focus {
+    border-color: #01B7AF;
+    box-shadow: 0 0 0 3px rgba(1, 183, 175, 0.1);
+    outline: none;
+}
+
+/* Select múltiple mejorado */
+.form-table select[multiple] {
+    padding: 8px;
+    min-height: 200px;
+}
+
+.form-table select[multiple] option {
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 2px;
+}
+
+.form-table select[multiple] option:hover {
+    background-color: #CEF2EF;
+}
+
+/* Checkboxes personalizados */
+.form-table input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    cursor: pointer;
+    accent-color: #01B7AF;
+}
+
+/* Descripciones */
+.form-table .description {
+    color: #666;
+    font-size: 13px;
+    font-style: italic;
+    margin-top: 5px;
+}
+
+/* Botón de guardar mejorado */
+.submit .button-primary {
+    background: linear-gradient(135deg, #01B7AF 0%, #5DD5C7 100%);
+    border: none;
+    border-radius: 6px;
+    padding: 10px 30px;
+    font-size: 14px;
+    font-weight: 600;
+    text-shadow: none;
+    box-shadow: 0 2px 8px rgba(1, 183, 175, 0.3);
+    transition: all 0.3s ease;
+}
+
+.submit .button-primary:hover {
+    background: linear-gradient(135deg, #019A92 0%, #4FBFB1 100%);
+    box-shadow: 0 4px 12px rgba(1, 183, 175, 0.4);
+    transform: translateY(-1px);
+}
+
+.submit .button-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(1, 183, 175, 0.3);
+}
+
+/* Mensajes de actualización */
+.notice.updated,
+.notice.settings-error {
+    border-left-width: 4px;
+    border-radius: 4px;
+    padding: 12px;
+}
+
+.notice.updated {
+    border-left-color: #01B7AF;
+}
+
+/* Footer del admin */
+.wland-chat-admin-footer {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+    color: #666;
+    font-size: 13px;
+}
+
+.wland-chat-admin-footer a {
+    color: #01B7AF;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.wland-chat-admin-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Títulos de sección */
+h2.title {
+    color: #1d2327;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 30px 0 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #01B7AF;
+}
+
+h2.title:first-child {
+    margin-top: 0;
+}
+
+/* Cards de información */
+.wland-info-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-left: 4px solid #01B7AF;
+    border-radius: 4px;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+.wland-info-card h4 {
+    margin: 0 0 10px 0;
+    color: #01B7AF;
+    font-size: 15px;
+}
+
+.wland-info-card p {
+    margin: 0;
+    color: #666;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* Responsive */
+@media screen and (max-width: 782px) {
+    .wland-chat-admin-header {
+        padding: 15px;
+    }
+    
+    .form-table th,
+    .form-table td {
+        display: block;
+        width: 100%;
+        padding: 10px 0;
+    }
+    
+    .form-table input[type="text"],
+    .form-table input[type="url"],
+    .form-table input[type="time"],
+    .form-table textarea,
+    .form-table select {
+        width: 100%;
+    }
+}
