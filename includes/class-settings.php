@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Clase para gestionar la configuración del plugin
+ * Gestión de configuración del plugin
  */
 class Settings {
     
@@ -21,15 +21,12 @@ class Settings {
     }
     
     private function __construct() {
-        add_action('admin_menu', array($this, 'add_admin_menu'));
+        add_action('admin_menu', array($this, 'add_settings_page'));
         add_action('admin_init', array($this, 'register_settings'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
     }
     
-    /**
-     * Agregar página de administración
-     */
-    public function add_admin_menu() {
+    public function add_settings_page() {
         add_options_page(
             __('Wland Chat iA', 'wland-chat'),
             __('Wland Chat iA', 'wland-chat'),
@@ -39,9 +36,6 @@ class Settings {
         );
     }
     
-    /**
-     * Registrar configuraciones
-     */
     public function register_settings() {
         // Sección General
         add_settings_section(
@@ -49,6 +43,21 @@ class Settings {
             __('Configuración General', 'wland-chat'),
             array($this, 'general_section_callback'),
             'wland-chat-settings'
+        );
+        
+        // NUEVO: Global Enable - Mostrar en toda la web
+        register_setting('wland_chat_settings', $this->option_prefix . 'global_enable', array(
+            'type' => 'boolean',
+            'sanitize_callback' => array($this, 'sanitize_checkbox'),
+            'default' => false
+        ));
+        
+        add_settings_field(
+            'global_enable',
+            __('Mostrar en toda la web', 'wland-chat'),
+            array($this, 'global_enable_callback'),
+            'wland-chat-settings',
+            'wland_chat_general_section'
         );
         
         // Webhook URL
@@ -66,7 +75,7 @@ class Settings {
             'wland_chat_general_section'
         );
         
-        // Título del header
+        // Header Title
         register_setting('wland_chat_settings', $this->option_prefix . 'header_title', array(
             'type' => 'string',
             'sanitize_callback' => 'sanitize_text_field',
@@ -81,7 +90,7 @@ class Settings {
             'wland_chat_general_section'
         );
         
-        // Subtítulo del header
+        // Header Subtitle
         register_setting('wland_chat_settings', $this->option_prefix . 'header_subtitle', array(
             'type' => 'string',
             'sanitize_callback' => 'sanitize_text_field',
@@ -96,7 +105,7 @@ class Settings {
             'wland_chat_general_section'
         );
         
-        // Mensaje de bienvenida
+        // Welcome Message
         register_setting('wland_chat_settings', $this->option_prefix . 'welcome_message', array(
             'type' => 'string',
             'sanitize_callback' => 'sanitize_textarea_field',
@@ -111,7 +120,7 @@ class Settings {
             'wland_chat_general_section'
         );
         
-        // Posición
+        // Position
         register_setting('wland_chat_settings', $this->option_prefix . 'position', array(
             'type' => 'string',
             'sanitize_callback' => array($this, 'sanitize_position'),
@@ -126,7 +135,7 @@ class Settings {
             'wland_chat_general_section'
         );
         
-        // Modo de visualización
+        // Display Mode
         register_setting('wland_chat_settings', $this->option_prefix . 'display_mode', array(
             'type' => 'string',
             'sanitize_callback' => array($this, 'sanitize_display_mode'),
@@ -171,7 +180,7 @@ class Settings {
             'wland-chat-settings'
         );
         
-        // Habilitar horarios
+        // Availability Enabled
         register_setting('wland_chat_settings', $this->option_prefix . 'availability_enabled', array(
             'type' => 'boolean',
             'sanitize_callback' => array($this, 'sanitize_checkbox'),
@@ -186,7 +195,7 @@ class Settings {
             'wland_chat_availability_section'
         );
         
-        // Hora de inicio
+        // Availability Start
         register_setting('wland_chat_settings', $this->option_prefix . 'availability_start', array(
             'type' => 'string',
             'sanitize_callback' => array($this, 'sanitize_time'),
@@ -201,7 +210,7 @@ class Settings {
             'wland_chat_availability_section'
         );
         
-        // Hora de fin
+        // Availability End
         register_setting('wland_chat_settings', $this->option_prefix . 'availability_end', array(
             'type' => 'string',
             'sanitize_callback' => array($this, 'sanitize_time'),
@@ -216,7 +225,7 @@ class Settings {
             'wland_chat_availability_section'
         );
         
-        // Zona horaria
+        // Availability Timezone
         register_setting('wland_chat_settings', $this->option_prefix . 'availability_timezone', array(
             'type' => 'string',
             'sanitize_callback' => 'sanitize_text_field',
@@ -231,7 +240,7 @@ class Settings {
             'wland_chat_availability_section'
         );
         
-        // Mensaje fuera de horario
+        // Availability Message
         register_setting('wland_chat_settings', $this->option_prefix . 'availability_message', array(
             'type' => 'string',
             'sanitize_callback' => 'sanitize_textarea_field',
@@ -265,12 +274,26 @@ class Settings {
     /**
      * Callbacks de campos
      */
+    
+    // NUEVO: Global Enable Callback
+    public function global_enable_callback() {
+        $value = get_option($this->option_prefix . 'global_enable');
+        printf(
+            '<input type="checkbox" name="%s" id="%s" value="1" %s />',
+            esc_attr($this->option_prefix . 'global_enable'),
+            esc_attr($this->option_prefix . 'global_enable'),
+            checked($value, 1, false)
+        );
+        echo ' <label for="' . esc_attr($this->option_prefix . 'global_enable') . '">' . __('Activar el chat en todas las páginas (sin necesidad de agregar el bloque)', 'wland-chat') . '</label>';
+        echo '<p class="description">' . __('Cuando esta opción está activada, el chat se mostrará automáticamente en todas las páginas de tu sitio web, excepto en las páginas excluidas.', 'wland-chat') . '</p>';
+    }
+    
     public function webhook_url_callback() {
         $value = get_option($this->option_prefix . 'webhook_url');
         printf(
-            '<input type="url" name="%s" value="%s" class="regular-text" required />',
+            '<input type="url" name="%s" value="%s" class="regular-text" />',
             esc_attr($this->option_prefix . 'webhook_url'),
-            esc_attr($value)
+            esc_url($value)
         );
         echo '<p class="description">' . __('URL del webhook de N8N para procesar los mensajes.', 'wland-chat') . '</p>';
     }
@@ -412,7 +435,7 @@ class Settings {
     }
     
     /**
-     * Funciones de sanitización
+     * Callbacks de sanitización
      */
     public function sanitize_position($value) {
         $allowed = array('bottom-right', 'bottom-left', 'center');
@@ -450,7 +473,6 @@ class Settings {
             return;
         }
         
-        // Verificar si se guardaron los cambios
         if (isset($_GET['settings-updated'])) {
             add_settings_error(
                 'wland_chat_messages',

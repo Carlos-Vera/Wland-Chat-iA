@@ -21,6 +21,8 @@ class Frontend {
     
     private function __construct() {
         add_action('wp_enqueue_scripts', array($this, 'enqueue_assets'));
+        // NUEVO: Hook para renderizar el chat globalmente
+        add_action('wp_footer', array($this, 'render_global_chat'), 100);
     }
     
     /**
@@ -29,6 +31,14 @@ class Frontend {
     public function enqueue_assets() {
         // Solo cargar si el chat debe mostrarse
         if (!Helpers::should_display_chat()) {
+            return;
+        }
+        
+        // NUEVO: Solo cargar si está habilitado globalmente O si hay un bloque en la página
+        $global_enable = get_option('wland_chat_global_enable', false);
+        $has_block = $this->page_has_chat_block();
+        
+        if (!$global_enable && !$has_block) {
             return;
         }
         
@@ -60,13 +70,66 @@ class Frontend {
             true
         );
         
-        // Localizar script
+        // Localizar script con la ruta correcta de la animación
         wp_localize_script('wland-chat-frontend', 'wlandChatData', array(
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('wland_chat_nonce'),
             'animationPath' => WLAND_CHAT_PLUGIN_URL . 'assets/media/chat.json',
             'isAvailable' => !Helpers::is_availability_enabled() || Helpers::is_within_availability_hours(),
         ));
+    }
+    
+    /**
+     * NUEVO: Renderizar chat globalmente si está habilitado
+     */
+    public function render_global_chat() {
+        // Solo renderizar si está habilitado globalmente
+        $global_enable = get_option('wland_chat_global_enable', false);
+        
+        if (!$global_enable) {
+            return;
+        }
+        
+        // Verificar si el chat debe mostrarse
+        if (!Helpers::should_display_chat()) {
+            return;
+        }
+        
+        // Verificar que no haya un bloque ya en la página
+        if ($this->page_has_chat_block()) {
+            return; // Si ya hay un bloque, no renderizar globalmente
+        }
+        
+        // Obtener los atributos por defecto de las opciones
+        $attributes = array(
+            'webhookUrl' => get_option('wland_chat_webhook_url'),
+            'headerTitle' => get_option('wland_chat_header_title'),
+            'headerSubtitle' => get_option('wland_chat_header_subtitle'),
+            'welcomeMessage' => Helpers::get_welcome_message(),
+            'position' => get_option('wland_chat_position', 'bottom-right'),
+            'displayMode' => get_option('wland_chat_display_mode', 'modal'),
+        );
+        
+        // Renderizar el widget
+        echo self::render_chat_widget($attributes);
+    }
+    
+    /**
+     * NUEVO: Verificar si la página actual tiene el bloque de chat
+     */
+    private function page_has_chat_block() {
+        global $post;
+        
+        if (!$post) {
+            return false;
+        }
+        
+        // Verificar si el contenido tiene el bloque de chat
+        if (has_block('wland/chat-widget', $post)) {
+            return true;
+        }
+        
+        return false;
     }
     
     /**
