@@ -2,10 +2,10 @@
 
 Plugin WordPress profesional para integrar chat con inteligencia artificial mediante bloque Gutenberg, desarrollado por Carlos Vera (BravesLab) para Weblandia.es
 
-## 🚀 Características
+## Características
 
 ### Funcionalidades Principales
-- **Bloque Gutenberg** personalizable para cualquier página o entrada
+- **Bloque Gutenberg** para personalizar en cualquier página o entrada
 - **Integración con N8N** mediante webhooks configurables
 - **Horarios de disponibilidad** con zonas horarias
 - **Páginas excluidas** mediante selector múltiple
@@ -29,13 +29,13 @@ Plugin WordPress profesional para integrar chat con inteligencia artificial medi
 - Zonas horarias internacionales
 - Mensajes personalizados fuera de horario
 
-## 📋 Requisitos
+## Requisitos
 
 - WordPress 5.8 o superior
 - PHP 7.4 o superior
 - Gutenberg (incluido en WordPress 5.0+)
 
-## 💾 Instalación
+## Instalación
 
 ### Método 1: Desde el archivo ZIP
 1. Descarga el plugin como archivo ZIP
@@ -53,7 +53,7 @@ Plugin WordPress profesional para integrar chat con inteligencia artificial medi
 ### Método 3: Desde GitHub
 ```bash
 cd wp-content/plugins/
-git clone https://github.com/Carlos-Vera/Wland-Chat-Block-iA.git wland-chat-ia
+git clone https://github.com/Carlos-Vera/Wland-Chat-iA.git wland-chat-ia
 ```
 
 ## ⚙️ Configuración
@@ -92,7 +92,7 @@ git clone https://github.com/Carlos-Vera/Wland-Chat-Block-iA.git wland-chat-ia
 3. Realiza cambios y visualiza en tiempo real
 4. Haz clic en **Publicar** para guardar
 
-## 🎨 Uso del Bloque
+## Uso del Bloque
 
 ### Agregar el Bloque en Gutenberg
 
@@ -213,7 +213,7 @@ add_action('wland_chat_after_render', function($attributes) {
 \WlandChat\Helpers::get_welcome_message();
 ```
 
-## 🌐 Internacionalización (i18n)
+## Internacionalización (i18n)
 
 ### Traducir el Plugin
 
@@ -257,7 +257,7 @@ El plugin incluye `uninstall.php` que:
 - Limpia metadatos de posts y usuarios
 - Limpia caché de WordPress
 
-## 📝 Changelog
+## Changelog
 
 ### 1.0.0 (2025-01-XX)
 - ✨ Versión inicial
@@ -273,14 +273,14 @@ El plugin incluye `uninstall.php` que:
 - ✨ Seguridad completa con nonces
 - ✨ Limpieza automática al desinstalar
 
-## 👥 Autores
+## Autores
 
 - **Carlos Vera** - [GitHub](https://github.com/Carlos-Vera) - carlos@braveslab.com
 - **Mikel Marqués (Ymikimonokia)** - hola@mikimonokia.com
 
 Desarrollado para **Weblandia.es** - [https://weblandia.es](https://weblandia.es)
 
-## 📄 Licencia
+## Licencia
 
 Este plugin es software comercial. Todos los derechos reservados.
 
@@ -288,13 +288,13 @@ Copyright (c) 2025 Carlos Vera & Mikel Marqués
 
 Para más información sobre la licencia, consulta el archivo [LICENSE](LICENSE).
 
-## 🤝 Soporte
+## Soporte
 
 Para soporte, consultas o reportar problemas:
 
 - **Email**: carlos@braveslab.com, hola@mikimonokia.com
 - **Web**: [https://weblandia.es](https://weblandia.es)
-- **GitHub Issues**: [Reportar un problema](https://github.com/Carlos-Vera/Wland-Chat-Block-iA/issues)
+- **GitHub Issues**: [Reportar un problema](https://github.com/Carlos-Vera/Wland-Chat-iA/issues)
 
 ## 🙏 Agradecimientos
 
@@ -304,4 +304,4 @@ Para soporte, consultas o reportar problemas:
 
 ---
 
-**Wland Chat iA** - Integrando inteligencia artificial en WordPress de forma profesional.
+**Wland Chat iA** - Integrando la inteligencia artificial en WordPress de forma profesional.
