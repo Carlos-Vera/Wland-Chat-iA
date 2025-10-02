@@ -1,13 +1,18 @@
 <?php
+/**
+ * Clase de funciones auxiliares
+ * 
+ * @package WlandChat
+ * @version 1.0.0
+ * MODIFICADO: Añadido token N8N a get_chat_config()
+ */
+
 namespace WlandChat;
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-/**
- * Clase de funciones auxiliares
- */
 class Helpers {
     
     /**
@@ -21,9 +26,8 @@ class Helpers {
         
         // Verificar horarios si está habilitado
         if (self::is_availability_enabled() && !self::is_within_availability_hours()) {
-            // Aquí podrías decidir si mostrar el chat con mensaje de fuera de horario
-            // o no mostrarlo en absoluto
-            return true; // Mostramos con mensaje diferente
+            // Mostramos con mensaje diferente
+            return true;
         }
         
         return true;
@@ -95,16 +99,18 @@ class Helpers {
     
     /**
      * Obtener configuración del chat
+     * MODIFICADO: Incluye el token de autenticación N8N
      */
     public static function get_chat_config() {
         return array(
-            'webhook_url' => get_option('wland_chat_webhook_url'),
-            'header_title' => get_option('wland_chat_header_title'),
+            'webhook_url'     => get_option('wland_chat_webhook_url'),
+            'n8n_auth_token'  => get_option('wland_chat_n8n_auth_token', ''), // NUEVO
+            'header_title'    => get_option('wland_chat_header_title'),
             'header_subtitle' => get_option('wland_chat_header_subtitle'),
             'welcome_message' => self::get_welcome_message(),
-            'position' => get_option('wland_chat_position', 'bottom-right'),
-            'display_mode' => get_option('wland_chat_display_mode', 'modal'),
-            'is_available' => !self::is_availability_enabled() || self::is_within_availability_hours(),
+            'position'        => get_option('wland_chat_position', 'bottom-right'),
+            'display_mode'    => get_option('wland_chat_display_mode', 'modal'),
+            'is_available'    => !self::is_availability_enabled() || self::is_within_availability_hours(),
         );
     }
     
@@ -113,24 +119,24 @@ class Helpers {
      */
     public static function sanitize_block_attributes($attributes) {
         $defaults = array(
-            'webhookUrl' => get_option('wland_chat_webhook_url'),
-            'headerTitle' => get_option('wland_chat_header_title'),
-            'headerSubtitle' => get_option('wland_chat_header_subtitle'),
-            'welcomeMessage' => self::get_welcome_message(),
-            'position' => get_option('wland_chat_position', 'bottom-right'),
-            'displayMode' => get_option('wland_chat_display_mode', 'modal'),
+            'webhookUrl'      => get_option('wland_chat_webhook_url'),
+            'headerTitle'     => get_option('wland_chat_header_title'),
+            'headerSubtitle'  => get_option('wland_chat_header_subtitle'),
+            'welcomeMessage'  => self::get_welcome_message(),
+            'position'        => get_option('wland_chat_position', 'bottom-right'),
+            'displayMode'     => get_option('wland_chat_display_mode', 'modal'),
         );
         
         $attributes = wp_parse_args($attributes, $defaults);
         
         return array(
-            'webhookUrl' => esc_url($attributes['webhookUrl']),
-            'headerTitle' => sanitize_text_field($attributes['headerTitle']),
-            'headerSubtitle' => sanitize_text_field($attributes['headerSubtitle']),
-            'welcomeMessage' => sanitize_textarea_field($attributes['welcomeMessage']),
-            'position' => in_array($attributes['position'], array('bottom-right', 'bottom-left', 'center')) 
+            'webhookUrl'      => esc_url($attributes['webhookUrl']),
+            'headerTitle'     => sanitize_text_field($attributes['headerTitle']),
+            'headerSubtitle'  => sanitize_text_field($attributes['headerSubtitle']),
+            'welcomeMessage'  => sanitize_textarea_field($attributes['welcomeMessage']),
+            'position'        => in_array($attributes['position'], array('bottom-right', 'bottom-left', 'center')) 
                 ? $attributes['position'] : 'bottom-right',
-            'displayMode' => in_array($attributes['displayMode'], array('modal', 'fullscreen'))
+            'displayMode'     => in_array($attributes['displayMode'], array('modal', 'fullscreen'))
                 ? $attributes['displayMode'] : 'modal',
         );
     }
@@ -157,36 +163,5 @@ class Helpers {
         }
         
         error_log($log_message);
-    }
-    
-    /**
-     * Verificar requisitos del sistema
-     */
-    public static function check_system_requirements() {
-        $requirements = array(
-            'php_version' => version_compare(PHP_VERSION, '7.4', '>='),
-            'wp_version' => version_compare(get_bloginfo('version'), '5.8', '>='),
-            'timezone_support' => class_exists('DateTimeZone'),
-        );
-        
-        return array_filter($requirements);
-    }
-    
-    /**
-     * Obtener información del sistema para debugging
-     */
-    public static function get_system_info() {
-        global $wp_version;
-        
-        return array(
-            'plugin_version' => WLAND_CHAT_VERSION,
-            'wp_version' => $wp_version,
-            'php_version' => PHP_VERSION,
-            'site_url' => get_site_url(),
-            'home_url' => get_home_url(),
-            'is_multisite' => is_multisite(),
-            'active_theme' => wp_get_theme()->get('Name'),
-            'timezone' => wp_timezone_string(),
-        );
     }
 }

@@ -1,13 +1,18 @@
 <?php
+/**
+ * Gestión del frontend
+ * 
+ * @package WlandChat
+ * @version 1.0.0
+ * MODIFICADO: Implementadas mejoras WPO y Seguridad N8N
+ */
+
 namespace WlandChat;
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-/**
- * Gestión del frontend
- */
 class Frontend {
     
     private static $instance = null;
@@ -21,28 +26,36 @@ class Frontend {
     
     private function __construct() {
         add_action('wp_enqueue_scripts', array($this, 'enqueue_assets'));
-        // NUEVO: Hook para renderizar el chat globalmente
         add_action('wp_footer', array($this, 'render_global_chat'), 100);
     }
     
     /**
      * Encolar assets del frontend
+     * 
+     * ========== TAREA 1: CARGA CONDICIONAL (WPO) ==========
+     * ========== TAREA 2B: PASAR TOKEN A JAVASCRIPT ==========
      */
     public function enqueue_assets() {
-        // Solo cargar si el chat debe mostrarse
+        // TAREA 1: Verificación condicional usando Helper
         if (!Helpers::should_display_chat()) {
+            // Desencolar assets si el chat no debe mostrarse
+            $this->dequeue_all_assets();
             return;
         }
         
-        // NUEVO: Solo cargar si está habilitado globalmente O si hay un bloque en la página
+        // Verificar si está habilitado globalmente O si hay un bloque en la página
         $global_enable = get_option('wland_chat_global_enable', false);
         $has_block = $this->page_has_chat_block();
         
         if (!$global_enable && !$has_block) {
+            // Desencolar assets si no cumple las condiciones
+            $this->dequeue_all_assets();
             return;
         }
         
-        // Lottie
+        // Si pasa las verificaciones, encolar los assets
+        
+        // Lottie Player
         wp_enqueue_script(
             'lottie-player',
             'https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js',
@@ -53,7 +66,7 @@ class Frontend {
         
         $display_mode = get_option('wland_chat_display_mode', 'modal');
         
-        // CSS
+        // CSS condicional según modo de visualización
         wp_enqueue_style(
             'wland-chat-frontend',
             WLAND_CHAT_PLUGIN_URL . 'assets/css/wland-chat-block-' . $display_mode . '.css',
@@ -61,7 +74,7 @@ class Frontend {
             WLAND_CHAT_VERSION
         );
         
-        // JS
+        // JS condicional según modo de visualización
         wp_enqueue_script(
             'wland-chat-frontend',
             WLAND_CHAT_PLUGIN_URL . 'assets/js/wland-chat-block-' . $display_mode . '.js',
@@ -70,52 +83,69 @@ class Frontend {
             true
         );
         
-        // Localizar script con la ruta correcta de la animación
-        wp_localize_script('wland-chat-frontend', 'wlandChatData', array(
-            'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('wland_chat_nonce'),
+        // TAREA 2B: Localizar script con configuración completa incluyendo token de autenticación
+        $chat_config = Helpers::get_chat_config();
+        
+        wp_localize_script('wland-chat-frontend', 'WlandChatConfig', array(
+            'ajaxUrl'       => admin_url('admin-ajax.php'),
+            'nonce'         => wp_create_nonce('wland_chat_nonce'),
+            'webhook_url'   => $chat_config['webhook_url'],
+            'auth_token'    => get_option('wland_chat_n8n_auth_token', ''), // NUEVO: Token N8N
             'animationPath' => WLAND_CHAT_PLUGIN_URL . 'assets/media/chat.json',
-            'isAvailable' => !Helpers::is_availability_enabled() || Helpers::is_within_availability_hours(),
+            'isAvailable'   => $chat_config['is_available'],
         ));
     }
     
     /**
-     * NUEVO: Renderizar chat globalmente si está habilitado
+     * TAREA 1: Desencolar todos los assets del chat
+     * Función auxiliar para mejorar la legibilidad
+     */
+    private function dequeue_all_assets() {
+        // Desencolar estilos
+        wp_dequeue_style('wland-chat-block-modal-css');
+        wp_dequeue_style('wland-chat-block-screen-css');
+        wp_dequeue_style('wland-chat-frontend');
+        
+        // Desencolar scripts
+        wp_dequeue_script('wland-chat-block-modal-js');
+        wp_dequeue_script('wland-chat-block-screen-js');
+        wp_dequeue_script('wland-chat-frontend');
+        wp_dequeue_script('lottie-player');
+    }
+    
+    /**
+     * Renderizar chat globalmente si está habilitado
      */
     public function render_global_chat() {
-        // Solo renderizar si está habilitado globalmente
         $global_enable = get_option('wland_chat_global_enable', false);
         
         if (!$global_enable) {
             return;
         }
         
-        // Verificar si el chat debe mostrarse
         if (!Helpers::should_display_chat()) {
             return;
         }
         
-        // Verificar que no haya un bloque ya en la página
         if ($this->page_has_chat_block()) {
-            return; // Si ya hay un bloque, no renderizar globalmente
+            return; // No renderizar si ya hay un bloque
         }
         
-        // Obtener los atributos por defecto de las opciones
+        // Obtener atributos por defecto
         $attributes = array(
-            'webhookUrl' => get_option('wland_chat_webhook_url'),
-            'headerTitle' => get_option('wland_chat_header_title'),
-            'headerSubtitle' => get_option('wland_chat_header_subtitle'),
-            'welcomeMessage' => Helpers::get_welcome_message(),
-            'position' => get_option('wland_chat_position', 'bottom-right'),
-            'displayMode' => get_option('wland_chat_display_mode', 'modal'),
+            'webhookUrl'      => get_option('wland_chat_webhook_url'),
+            'headerTitle'     => get_option('wland_chat_header_title'),
+            'headerSubtitle'  => get_option('wland_chat_header_subtitle'),
+            'welcomeMessage'  => Helpers::get_welcome_message(),
+            'position'        => get_option('wland_chat_position', 'bottom-right'),
+            'displayMode'     => get_option('wland_chat_display_mode', 'modal'),
         );
         
-        // Renderizar el widget
         echo self::render_chat_widget($attributes);
     }
     
     /**
-     * NUEVO: Verificar si la página actual tiene el bloque de chat
+     * Verificar si la página actual tiene el bloque de chat
      */
     private function page_has_chat_block() {
         global $post;
@@ -124,30 +154,20 @@ class Frontend {
             return false;
         }
         
-        // Verificar si el contenido tiene el bloque de chat
-        if (has_block('wland/chat-widget', $post)) {
-            return true;
-        }
-        
-        return false;
+        return has_block('wland/chat-widget', $post);
     }
     
     /**
      * Renderizar widget de chat
      */
     public static function render_chat_widget($attributes = array()) {
-        // Verificar si debe mostrarse
         if (!Helpers::should_display_chat()) {
             return '';
         }
         
-        // Sanitizar y mezclar con valores por defecto
         $attributes = Helpers::sanitize_block_attributes($attributes);
-        
-        // Generar ID único
         $unique_id = Helpers::generate_unique_id();
         
-        // Extraer variables
         extract($attributes);
         
         $webhook_url = $webhookUrl;
@@ -157,10 +177,8 @@ class Frontend {
         $position = $attributes['position'];
         $display_mode = $attributes['displayMode'];
         
-        // Buffer de salida
         ob_start();
         
-        // Cargar plantilla correspondiente
         if ($display_mode === 'fullscreen') {
             include WLAND_CHAT_PLUGIN_DIR . 'templates/screen.php';
         } else {

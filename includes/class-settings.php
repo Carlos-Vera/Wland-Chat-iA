@@ -1,13 +1,18 @@
 <?php
+/**
+ * Gestión de configuración del plugin
+ * 
+ * @package WlandChat
+ * @version 1.0.0
+ * MODIFICADO: Añadido campo de token N8N para autenticación
+ */
+
 namespace WlandChat;
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-/**
- * Gestión de configuración del plugin
- */
 class Settings {
     
     private static $instance = null;
@@ -37,7 +42,7 @@ class Settings {
     }
     
     public function register_settings() {
-        // Sección General
+        // ==================== SECCIÓN GENERAL ====================
         add_settings_section(
             'wland_chat_general_section',
             __('Configuración General', 'wland-chat'),
@@ -45,7 +50,7 @@ class Settings {
             'wland-chat-settings'
         );
         
-        // NUEVO: Global Enable - Mostrar en toda la web
+        // Global Enable
         register_setting('wland_chat_settings', $this->option_prefix . 'global_enable', array(
             'type' => 'boolean',
             'sanitize_callback' => array($this, 'sanitize_checkbox'),
@@ -74,6 +79,22 @@ class Settings {
             'wland-chat-settings',
             'wland_chat_general_section'
         );
+        
+        // ========== TAREA 2A: CAMPO TOKEN DE AUTENTICACIÓN N8N ==========
+        register_setting('wland_chat_settings', $this->option_prefix . 'n8n_auth_token', array(
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field', // Sanitización automática
+            'default' => ''
+        ));
+        
+        add_settings_field(
+            'n8n_auth_token',
+            __('Token de Autenticación N8N', 'wland-chat'),
+            array($this, 'n8n_auth_token_callback'),
+            'wland-chat-settings',
+            'wland_chat_general_section'
+        );
+        // ========== FIN TAREA 2A ==========
         
         // Header Title
         register_setting('wland_chat_settings', $this->option_prefix . 'header_title', array(
@@ -150,7 +171,7 @@ class Settings {
             'wland_chat_general_section'
         );
         
-        // Sección de Páginas Excluidas
+        // ==================== SECCIÓN PÁGINAS EXCLUIDAS ====================
         add_settings_section(
             'wland_chat_exclusions_section',
             __('Páginas Excluidas', 'wland-chat'),
@@ -172,7 +193,7 @@ class Settings {
             'wland_chat_exclusions_section'
         );
         
-        // Sección de Disponibilidad
+        // ==================== SECCIÓN DISPONIBILIDAD ====================
         add_settings_section(
             'wland_chat_availability_section',
             __('Horarios de Disponibilidad', 'wland-chat'),
@@ -256,9 +277,8 @@ class Settings {
         );
     }
     
-    /**
-     * Callbacks de secciones
-     */
+    // ==================== CALLBACKS DE SECCIONES ====================
+    
     public function general_section_callback() {
         echo '<p>' . __('Configure los ajustes generales del chat.', 'wland-chat') . '</p>';
     }
@@ -271,31 +291,50 @@ class Settings {
         echo '<p>' . __('Configure los horarios de disponibilidad del chat.', 'wland-chat') . '</p>';
     }
     
-    /**
-     * Callbacks de campos
-     */
+    // ==================== CALLBACKS DE CAMPOS ====================
     
-    // NUEVO: Global Enable Callback
     public function global_enable_callback() {
-        $value = get_option($this->option_prefix . 'global_enable');
+        $value = get_option($this->option_prefix . 'global_enable', false);
         printf(
-            '<input type="checkbox" name="%s" id="%s" value="1" %s />',
+            '<label><input type="checkbox" name="%s" value="1" %s /> %s</label>',
             esc_attr($this->option_prefix . 'global_enable'),
-            esc_attr($this->option_prefix . 'global_enable'),
-            checked($value, 1, false)
+            checked(1, $value, false),
+            __('Mostrar el chat en todas las páginas del sitio', 'wland-chat')
         );
-        echo ' <label for="' . esc_attr($this->option_prefix . 'global_enable') . '">' . __('Activar el chat en todas las páginas (sin necesidad de agregar el bloque)', 'wland-chat') . '</label>';
-        echo '<p class="description">' . __('Cuando esta opción está activada, el chat se mostrará automáticamente en todas las páginas de tu sitio web, excepto en las páginas excluidas.', 'wland-chat') . '</p>';
     }
     
     public function webhook_url_callback() {
         $value = get_option($this->option_prefix . 'webhook_url');
         printf(
-            '<input type="url" name="%s" value="%s" class="regular-text" />',
+            '<input type="url" name="%s" value="%s" class="regular-text" placeholder="https://flow.braveslab.com/webhook/..." /><p class="description">%s</p>',
             esc_attr($this->option_prefix . 'webhook_url'),
-            esc_url($value)
+            esc_attr($value),
+            __('URL del webhook de N8N para procesar los mensajes.', 'wland-chat')
         );
-        echo '<p class="description">' . __('URL del webhook de N8N para procesar los mensajes.', 'wland-chat') . '</p>';
+    }
+    
+    /**
+     * ========== TAREA 2A: CALLBACK PARA TOKEN N8N ==========
+     */
+    public function n8n_auth_token_callback() {
+        $value = get_option($this->option_prefix . 'n8n_auth_token', '');
+        ?>
+        <input 
+            type="password" 
+            name="<?php echo esc_attr($this->option_prefix . 'n8n_auth_token'); ?>" 
+            value="<?php echo esc_attr($value); ?>" 
+            class="regular-text"
+            autocomplete="new-password"
+            placeholder="••••••••••••••••"
+        />
+        <p class="description">
+            <?php _e('Token secreto para autenticar las peticiones al webhook de N8N (Header Auth X-N8N-Auth). Déjalo vacío si no usas autenticación.', 'wland-chat'); ?>
+        </p>
+        <p class="description">
+            <strong><?php _e('Importante:', 'wland-chat'); ?></strong>
+            <?php _e('Este token se enviará en cada petición al webhook para verificar que proviene del plugin.', 'wland-chat'); ?>
+        </p>
+        <?php
     }
     
     public function header_title_callback() {
@@ -382,13 +421,13 @@ class Settings {
     }
     
     public function availability_enabled_callback() {
-        $value = get_option($this->option_prefix . 'availability_enabled');
+        $value = get_option($this->option_prefix . 'availability_enabled', false);
         printf(
-            '<input type="checkbox" name="%s" value="1" %s />',
+            '<label><input type="checkbox" name="%s" value="1" %s /> %s</label>',
             esc_attr($this->option_prefix . 'availability_enabled'),
-            checked($value, 1, false)
+            checked(1, $value, false),
+            __('Activar restricción por horarios', 'wland-chat')
         );
-        echo ' <label>' . __('Activar restricción por horarios', 'wland-chat') . '</label>';
     }
     
     public function availability_start_callback() {
@@ -428,15 +467,14 @@ class Settings {
     public function availability_message_callback() {
         $value = get_option($this->option_prefix . 'availability_message');
         printf(
-            '<textarea name="%s" rows="3" class="large-text">%s</textarea>',
+            '<textarea name="%s" rows="4" class="large-text">%s</textarea>',
             esc_attr($this->option_prefix . 'availability_message'),
             esc_textarea($value)
         );
     }
     
-    /**
-     * Callbacks de sanitización
-     */
+    // ==================== FUNCIONES DE SANITIZACIÓN ====================
+    
     public function sanitize_position($value) {
         $allowed = array('bottom-right', 'bottom-left', 'center');
         return in_array($value, $allowed) ? $value : 'bottom-right';
@@ -465,9 +503,8 @@ class Settings {
         return '09:00';
     }
     
-    /**
-     * Renderizar página de configuración
-     */
+    // ==================== RENDERIZADO DE PÁGINA ====================
+    
     public function render_settings_page() {
         if (!current_user_can('manage_options')) {
             return;
@@ -514,9 +551,6 @@ class Settings {
         <?php
     }
     
-    /**
-     * Encolar assets del admin
-     */
     public function enqueue_admin_assets($hook) {
         if ('settings_page_wland-chat-settings' !== $hook) {
             return;

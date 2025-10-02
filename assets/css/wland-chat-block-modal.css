@@ -2,6 +2,7 @@
  * Estilos para el chat en modo Modal - Wland Chat iA
  * Version: 1.0.0
  * @package WlandChat
+ * CORREGIDO: Display del chat window
  */
 
 /* Reset y contenedor principal */
@@ -90,7 +91,7 @@ body #braveslab-chat-container.chat-closed #chat-toggle #chat-lottie svg {
 }
 
 /* ============================================
-   ICONO X - ESTADO ABIERTO (SOLUCIÓN 1)
+   ICONO X - ESTADO ABIERTO
    ============================================ */
 body #braveslab-chat-container.chat-closed #chat-toggle #close-icon {
     display: none !important;
@@ -113,7 +114,7 @@ body #braveslab-chat-container.chat-open #chat-toggle #close-icon {
 }
 
 /* ============================================
-   VENTANA DE CHAT
+   VENTANA DE CHAT - CORREGIDO ⭐
    ============================================ */
 body #braveslab-chat-container #chat-window {
     position: absolute;
@@ -124,12 +125,33 @@ body #braveslab-chat-container #chat-window {
     background: white;
     border-radius: 20px;
     box-shadow: 0 10px 40px rgba(10, 10, 10, 0.15);
-    display: none;
+    display: flex; /* CAMBIADO: Era display: none */
     flex-direction: column;
     overflow: hidden;
-    animation: slideInUp 0.3s ease;
+    opacity: 0; /* NUEVO: Usamos opacity en vez de display */
+    visibility: hidden; /* NUEVO: Ocultamos con visibility */
+    transform: translateY(20px); /* NUEVO: Animación inicial */
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease; /* NUEVO */
+    pointer-events: none; /* NUEVO: Evita clicks cuando está oculto */
 }
 
+/* Estado ABIERTO - NUEVO ⭐ */
+body #braveslab-chat-container.chat-open #chat-window {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Estado CERRADO - NUEVO ⭐ */
+body #braveslab-chat-container.chat-closed #chat-window {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    pointer-events: none;
+}
+
+/* Animación de entrada (mantener por compatibilidad) */
 @keyframes slideInUp {
     from {
         opacity: 0;
@@ -267,7 +289,7 @@ body #braveslab-chat-container .message-time {
 }
 
 /* ============================================
-   INPUT CONTAINER (SOLUCIÓN 2)
+   INPUT CONTAINER
    ============================================ */
 body #braveslab-chat-container #chat-input-container {
     padding: 15px;
@@ -300,7 +322,7 @@ body #braveslab-chat-container #chat-input:focus {
 }
 
 /* ============================================
-   BOTÓN DE ENVIAR - CORREGIDO
+   BOTÓN DE ENVIAR
    ============================================ */
 body #braveslab-chat-container #send-button {
     width: 45px;
