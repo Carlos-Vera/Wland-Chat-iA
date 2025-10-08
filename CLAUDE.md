@@ -117,7 +117,7 @@ All options prefixed with `wland_chat_`:
 ### Testing Changes
 1. Changes to PHP files require WordPress cache clear or page refresh
 2. JavaScript changes may need browser cache clear (Cmd+Shift+R)
-3. Test admin panel at: `/wp-admin/options-general.php?page=wland-chat-settings`
+3. Test admin panel at: `/wp-admin/options-general.php?page=wland_chat_settings`
 4. Test block editor: Create/edit any post/page, add "Wland Chat iA" block
 
 ### Git Workflow
@@ -148,8 +148,8 @@ Plugin provides filters (check README.md for full list):
 - `wland_chat_block_attributes`: Alter block defaults
 
 ### Internationalization
-- Text domain: `wland-chat`
-- POT file: `languages/wland-chat.pot`
+- Text domain: `wland-chat` (WordPress convention keeps hyphens in text domains)
+- POT file: `languages/wland_chat.pot`
 - All strings use `__()`, `_e()`, `_x()` functions
 
 ## Common Modifications

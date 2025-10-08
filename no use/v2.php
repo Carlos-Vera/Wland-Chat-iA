@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Wland Chat iA
- * Plugin URI: https://github.com/Carlos-Vera/Wland-Chat-iA
- * Description: Integración profesional de chat con IA mediante bloque Gutenberg, con horarios personalizables y páginas excluidas. Desarrollado por Carlos Vera para Weblandia.es
+ * Plugin URI: https://github.com/Carlos-Vera/Wland-Chat-Block-iA
+ * Description: Integración profesional de chat con IA mediante bloque Gutenberg, con horarios personalizables y páginas excluidas. Desarrollado por BravesLab para Weblandia.es
  * Version: 1.0.0
  * Author: Carlos Vera, Mikel Marqués
  * Author URI: https://weblandia.es
@@ -13,7 +13,7 @@
  * License: Commercial
  * License URI: LICENSE
  * 
- * GitHub Plugin URI: Carlos-Vera/Wland-Chat-iA
+ * GitHub Plugin URI: Carlos-Vera/Wland-Chat-Block-iA
  * GitHub Branch: main
  */
 
@@ -63,11 +63,11 @@ class WlandChatIA {
      * Cargar dependencias
      */
     private function load_dependencies() {
-        require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class_helpers.php';
-        require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class_settings.php';
-        require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class_customizer.php';
-        require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class_block.php';
-        require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class_frontend.php';
+        require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class-helpers.php';
+        require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class-settings.php';
+        require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class-customizer.php';
+        require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class-block.php';
+        require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class-frontend.php';
     }
     
     /**
@@ -161,12 +161,12 @@ class WlandChatIA {
     public function add_action_links($links) {
         $settings_link = sprintf(
             '<a href="%s">%s</a>',
-            admin_url('options-general.php?page=wland_chat_settings'),
+            admin_url('options-general.php?page=wland-chat-settings'),
             __('Ajustes', 'wland-chat')
         );
-
+        
         array_unshift($links, $settings_link);
-
+        
         return $links;
     }
 }

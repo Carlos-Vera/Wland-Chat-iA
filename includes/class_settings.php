@@ -36,7 +36,7 @@ class Settings {
             __('Wland Chat iA', 'wland-chat'),
             __('Wland Chat iA', 'wland-chat'),
             'manage_options',
-            'wland-chat-settings',
+            'wland_chat_settings',
             array($this, 'render_settings_page')
         );
     }
@@ -61,7 +61,7 @@ class Settings {
             'global_enable',
             __('Mostrar en toda la web', 'wland-chat'),
             array($this, 'global_enable_callback'),
-            'wland-chat-settings',
+            'wland_chat_settings',
             'wland_chat_general_section'
         );
         
@@ -76,7 +76,7 @@ class Settings {
             'webhook_url',
             __('URL del Webhook', 'wland-chat'),
             array($this, 'webhook_url_callback'),
-            'wland-chat-settings',
+            'wland_chat_settings',
             'wland_chat_general_section'
         );
         
@@ -91,7 +91,7 @@ class Settings {
             'n8n_auth_token',
             __('Token de Autenticación N8N', 'wland-chat'),
             array($this, 'n8n_auth_token_callback'),
-            'wland-chat-settings',
+            'wland_chat_settings',
             'wland_chat_general_section'
         );
         // ========== FIN TAREA 2A ==========
@@ -107,7 +107,7 @@ class Settings {
             'header_title',
             __('Título del Header', 'wland-chat'),
             array($this, 'header_title_callback'),
-            'wland-chat-settings',
+            'wland_chat_settings',
             'wland_chat_general_section'
         );
         
@@ -122,7 +122,7 @@ class Settings {
             'header_subtitle',
             __('Subtítulo del Header', 'wland-chat'),
             array($this, 'header_subtitle_callback'),
-            'wland-chat-settings',
+            'wland_chat_settings',
             'wland_chat_general_section'
         );
         
@@ -137,7 +137,7 @@ class Settings {
             'welcome_message',
             __('Mensaje de Bienvenida', 'wland-chat'),
             array($this, 'welcome_message_callback'),
-            'wland-chat-settings',
+            'wland_chat_settings',
             'wland_chat_general_section'
         );
         
@@ -152,7 +152,7 @@ class Settings {
             'position',
             __('Posición del Chat', 'wland-chat'),
             array($this, 'position_callback'),
-            'wland-chat-settings',
+            'wland_chat_settings',
             'wland_chat_general_section'
         );
         
@@ -167,7 +167,7 @@ class Settings {
             'display_mode',
             __('Modo de Visualización', 'wland-chat'),
             array($this, 'display_mode_callback'),
-            'wland-chat-settings',
+            'wland_chat_settings',
             'wland_chat_general_section'
         );
         
@@ -189,7 +189,7 @@ class Settings {
             'excluded_pages',
             __('Páginas donde NO mostrar el chat', 'wland-chat'),
             array($this, 'excluded_pages_callback'),
-            'wland-chat-settings',
+            'wland_chat_settings',
             'wland_chat_exclusions_section'
         );
         
@@ -212,7 +212,7 @@ class Settings {
             'availability_enabled',
             __('Habilitar Horarios', 'wland-chat'),
             array($this, 'availability_enabled_callback'),
-            'wland-chat-settings',
+            'wland_chat_settings',
             'wland_chat_availability_section'
         );
         
@@ -227,7 +227,7 @@ class Settings {
             'availability_start',
             __('Hora de Inicio', 'wland-chat'),
             array($this, 'availability_start_callback'),
-            'wland-chat-settings',
+            'wland_chat_settings',
             'wland_chat_availability_section'
         );
         
@@ -242,7 +242,7 @@ class Settings {
             'availability_end',
             __('Hora de Fin', 'wland-chat'),
             array($this, 'availability_end_callback'),
-            'wland-chat-settings',
+            'wland_chat_settings',
             'wland_chat_availability_section'
         );
         
@@ -257,7 +257,7 @@ class Settings {
             'availability_timezone',
             __('Zona Horaria', 'wland-chat'),
             array($this, 'availability_timezone_callback'),
-            'wland-chat-settings',
+            'wland_chat_settings',
             'wland_chat_availability_section'
         );
         
@@ -272,7 +272,7 @@ class Settings {
             'availability_message',
             __('Mensaje Fuera de Horario', 'wland-chat'),
             array($this, 'availability_message_callback'),
-            'wland-chat-settings',
+            'wland_chat_settings',
             'wland_chat_availability_section'
         );
     }
@@ -531,7 +531,7 @@ class Settings {
             <form action="options.php" method="post">
                 <?php
                 settings_fields('wland_chat_settings');
-                do_settings_sections('wland-chat-settings');
+                do_settings_sections('wland_chat_settings');
                 submit_button(__('Guardar Cambios', 'wland-chat'));
                 ?>
             </form>
@@ -552,7 +552,7 @@ class Settings {
     }
     
     public function enqueue_admin_assets($hook) {
-        if ('settings_page_wland-chat-settings' !== $hook) {
+        if ('settings_page_wland_chat_settings' !== $hook) {
             return;
         }
         
