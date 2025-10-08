@@ -19,31 +19,31 @@ This is a WordPress plugin located within a XAMPP installation:
 
 All PHP classes use the `WlandChat` namespace and follow the Singleton pattern:
 
-**Main Plugin File**: `wland-chat-ia.php`
+**Main Plugin File**: `wland_chat_ia.php`
 - Entry point that initializes the plugin
 - Defines constants (`WLAND_CHAT_VERSION`, `WLAND_CHAT_PLUGIN_DIR`, etc.)
 - Loads all class dependencies
 - Handles activation/deactivation hooks
 
 **Core Classes** (in `includes/`):
-- **`class-settings.php`**: Settings API implementation for admin panel configuration
+- **`class_settings.php`**: Settings API implementation for admin panel configuration
   - Registers all plugin options (webhook URL, N8N auth token, titles, messages, etc.)
   - Handles sanitization and validation
   - Renders admin settings page at **Settings > Wland Chat iA**
 
-- **`class-customizer.php`**: WordPress Customizer API integration for live preview
+- **`class_customizer.php`**: WordPress Customizer API integration for live preview
 
-- **`class-block.php`**: Gutenberg block registration
+- **`class_block.php`**: Gutenberg block registration
   - Registers `wland/chat-widget` block type
-  - Dynamically generates block.js, block-editor.css, and block-style.css if missing
+  - Dynamically generates block.js, block_editor.css, and block_style.css if missing
   - Server-side rendering via `render_block()` method
 
-- **`class-frontend.php`**: Frontend asset management and rendering
+- **`class_frontend.php`**: Frontend asset management and rendering
   - **Conditional asset loading** (WPO optimization) - only loads CSS/JS when chat should display
   - Handles global chat rendering (when enabled site-wide)
   - Passes N8N auth token to JavaScript via `wp_localize_script()`
 
-- **`class-helpers.php`**: Utility functions
+- **`class_helpers.php`**: Utility functions
   - `should_display_chat()`: Checks exclusions and availability
   - `is_within_availability_hours()`: Timezone-aware scheduling
   - `get_chat_config()`: Returns full config including N8N token
@@ -51,14 +51,18 @@ All PHP classes use the `WlandChat` namespace and follow the Singleton pattern:
 
 ### Frontend JavaScript Architecture
 
-**Modal Mode** (`assets/js/wland-chat-block-modal.js`):
+**Modal Mode** (`assets/js/wland_chat_block_modal.js`):
 - `WlandChatModal` class handles chat window lifecycle
 - Fetches from N8N webhook with `X-N8N-Auth` header authentication
-- Maintains conversation history in `conversationHistory` array
+- Maintains conversation history in `conversation_history` array
 - Sends payload format: `{prompt, sessionId, history}`
+- All methods use snake_case naming
+- Complete JSDoc documentation on every function
 
-**Fullscreen Mode** (`assets/js/wland-chat-block-screen.js`):
+**Fullscreen Mode** (`assets/js/wland_chat_block_screen.js`):
 - Similar architecture for fullscreen display mode
+- All methods use snake_case naming
+- Complete JSDoc documentation on every function
 
 **Gutenberg Block** (`assets/js/block.js`):
 - Registers block with WordPress block editor
@@ -124,10 +128,10 @@ All options prefixed with `wland_chat_`:
 ### File Generation
 The plugin auto-generates missing asset files on initialization:
 - `assets/js/block.js`
-- `assets/css/block-editor.css`
-- `assets/css/block-style.css`
+- `assets/css/block_editor.css`
+- `assets/css/block_style.css`
 
-Don't manually create these - let `class-block.php` methods handle it.
+Don't manually create these - let `class_block.php` methods handle it.
 
 ## Important Implementation Details
 
@@ -151,19 +155,19 @@ Plugin provides filters (check README.md for full list):
 ## Common Modifications
 
 ### Adding New Settings Field
-1. Register setting in `class-settings.php::register_settings()`
+1. Register setting in `class_settings.php::register_settings()`
 2. Add callback method for field rendering
 3. Add sanitization callback if needed
-4. Update `class-helpers.php::get_chat_config()` if passed to frontend
+4. Update `class_helpers.php::get_chat_config()` if passed to frontend
 
 ### Modifying N8N Request
-Edit `assets/js/wland-chat-block-modal.js::sendMessage()`:
+Edit `assets/js/wland_chat_block_modal.js::send_message()`:
 - Change headers object
 - Modify payload structure
 - Adjust response parsing
 
 ### Changing Display Logic
-Modify `class-helpers.php::should_display_chat()`:
+Modify `class_helpers.php::should_display_chat()`:
 - Add conditions
 - Check additional options
 - Update exclusion rules
@@ -199,8 +203,14 @@ Modify `class-helpers.php::should_display_chat()`:
 - **JSDoc required**: Every JavaScript function must have JSDoc comment block above it
 - **PHP DocBlocks**: Use standard WordPress DocBlock format for PHP functions
 
+### File Naming Convention
+- **All files use snake_case**: `wland_chat_ia.php`, `class_settings.php`, `wland_chat_block_modal.js`
+- **NO hyphens in file names**: Changed from `class-settings.php` to `class_settings.php`
+- **NO camelCase in file names**: Changed from `wlandChatModal.js` to `wland_chat_modal.js`
+
 ### Standards
 - PHP: WordPress Coding Standards + snake_case naming
 - JavaScript: ES6+ with class syntax + snake_case naming + JSDoc
 - CSS: BEM-like naming for chat components
 - Namespace all PHP classes under `WlandChat`
+- All file names use snake_case (underscores, not hyphens)

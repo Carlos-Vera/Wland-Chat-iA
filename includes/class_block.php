@@ -78,14 +78,14 @@ class Block {
         
         wp_enqueue_style(
             'wland-chat-block-editor-style',
-            WLAND_CHAT_PLUGIN_URL . 'assets/css/block-editor.css',
+            WLAND_CHAT_PLUGIN_URL . 'assets/css/block_editor.css',
             array(),
             WLAND_CHAT_VERSION
         );
-        
+
         wp_enqueue_style(
             'wland-chat-block-style',
-            WLAND_CHAT_PLUGIN_URL . 'assets/css/block-style.css',
+            WLAND_CHAT_PLUGIN_URL . 'assets/css/block_style.css',
             array(),
             WLAND_CHAT_VERSION
         );
@@ -159,14 +159,14 @@ class Block {
             $this->create_block_js($block_js_file);
         }
         
-        // Crear block-editor.css si no existe
-        $block_editor_css = $css_dir . 'block-editor.css';
+        // Crear block_editor.css si no existe
+        $block_editor_css = $css_dir . 'block_editor.css';
         if (!file_exists($block_editor_css)) {
             $this->create_block_editor_css($block_editor_css);
         }
-        
-        // Crear block-style.css si no existe
-        $block_style_css = $css_dir . 'block-style.css';
+
+        // Crear block_style.css si no existe
+        $block_style_css = $css_dir . 'block_style.css';
         if (!file_exists($block_style_css)) {
             $this->create_block_style_css($block_style_css);
         }

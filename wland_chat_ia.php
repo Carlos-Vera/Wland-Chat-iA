@@ -63,11 +63,11 @@ class WlandChatIA {
      * Cargar dependencias
      */
     private function load_dependencies() {
-        require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class-helpers.php';
-        require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class-settings.php';
-        require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class-customizer.php';
-        require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class-block.php';
-        require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class-frontend.php';
+        require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class_helpers.php';
+        require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class_settings.php';
+        require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class_customizer.php';
+        require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class_block.php';
+        require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class_frontend.php';
     }
     
     /**

@@ -69,15 +69,15 @@ class Frontend {
         // CSS condicional según modo de visualización
         wp_enqueue_style(
             'wland-chat-frontend',
-            WLAND_CHAT_PLUGIN_URL . 'assets/css/wland-chat-block-' . $display_mode . '.css',
+            WLAND_CHAT_PLUGIN_URL . 'assets/css/wland_chat_block_' . $display_mode . '.css',
             array(),
             WLAND_CHAT_VERSION
         );
-        
+
         // JS condicional según modo de visualización
         wp_enqueue_script(
             'wland-chat-frontend',
-            WLAND_CHAT_PLUGIN_URL . 'assets/js/wland-chat-block-' . $display_mode . '.js',
+            WLAND_CHAT_PLUGIN_URL . 'assets/js/wland_chat_block_' . $display_mode . '.js',
             array('lottie-player'),
             WLAND_CHAT_VERSION,
             true
@@ -105,7 +105,7 @@ class Frontend {
         wp_dequeue_style('wland-chat-block-modal-css');
         wp_dequeue_style('wland-chat-block-screen-css');
         wp_dequeue_style('wland-chat-frontend');
-        
+
         // Desencolar scripts
         wp_dequeue_script('wland-chat-block-modal-js');
         wp_dequeue_script('wland-chat-block-screen-js');
