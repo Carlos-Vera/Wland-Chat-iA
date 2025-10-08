@@ -2,319 +2,386 @@
  * Wland Chat iA - Modal Mode
  * Version: 1.0.0
  * MODIFICADO: Implementada autenticación N8N con header X-N8N-Auth
+ * REFACTORIZADO: snake_case y JSDoc
  */
 
 class WlandChatModal {
+    /**
+     * Constructor de la clase WlandChatModal
+     * Inicializa las propiedades y llama a init()
+     */
     constructor() {
-        this.isOpen = false;
-        this.lottieAnimation = null;
-        this.conversationHistory = [];
-        this.sessionId = this.generateSessionId();
-        
+        this.is_open = false;
+        this.lottie_animation = null;
+        this.conversation_history = [];
+        this.session_id = this.generate_session_id();
+
         // Obtener configuración desde PHP
-        this.animationPath = window.wlandChatData?.animationPath || window.WlandChatConfig?.animationPath || '';
-        this.webhookUrl = window.wlandChatConfig?.webhookUrl || window.WlandChatConfig?.webhook_url || '';
-        this.authToken = window.WlandChatConfig?.auth_token || ''; // NUEVO: Token de autenticación
-        
+        this.animation_path = window.wlandChatData?.animationPath || window.WlandChatConfig?.animationPath || '';
+        this.webhook_url = window.wlandChatConfig?.webhookUrl || window.WlandChatConfig?.webhook_url || '';
+        this.auth_token = window.WlandChatConfig?.auth_token || ''; // Token de autenticación
+
         this.init();
     }
-    
+
+    /**
+     * Inicializa el chat modal
+     * Configura elementos del DOM, animaciones y event listeners
+     * @returns {void}
+     */
     init() {
         console.log('Inicializando Wland Chat Modal...');
-        console.log('Webhook URL:', this.webhookUrl);
-        console.log('🔐 Auth Token:', this.authToken ? '✓ Configurado' : '✗ No configurado');
-        
+        console.log('Webhook URL:', this.webhook_url);
+        console.log('🔐 Auth Token:', this.auth_token ? '✓ Configurado' : '✗ No configurado');
+
         // Elementos del DOM
-        this.chatContainer = document.getElementById('braveslab-chat-container');
-        this.chatToggle = document.getElementById('chat-toggle');
-        this.chatWindow = document.getElementById('chat-window');
-        this.closeButton = document.getElementById('close-chat');
-        this.chatMessages = document.getElementById('chat-messages');
-        this.chatInput = document.getElementById('chat-input');
-        this.sendButton = document.getElementById('send-button');
-        this.typingIndicator = document.getElementById('typing-indicator');
-        
-        if (!this.chatContainer) {
+        this.chat_container = document.getElementById('braveslab-chat-container');
+        this.chat_toggle = document.getElementById('chat-toggle');
+        this.chat_window = document.getElementById('chat-window');
+        this.close_button = document.getElementById('close-chat');
+        this.chat_messages = document.getElementById('chat-messages');
+        this.chat_input = document.getElementById('chat-input');
+        this.send_button = document.getElementById('send-button');
+        this.typing_indicator = document.getElementById('typing-indicator');
+
+        if (!this.chat_container) {
             console.error('❌ No se encontró el contenedor del chat');
             return;
         }
-        
+
         // Inicializar Lottie animation
-        this.initLottieAnimation();
-        
+        this.init_lottie_animation();
+
         // Mostrar hora del mensaje de bienvenida
-        this.displayWelcomeTime();
-        
+        this.display_welcome_time();
+
         // Event Listeners
-        this.setupEventListeners();
-        
+        this.setup_event_listeners();
+
         console.log('✅ Chat Modal inicializado correctamente');
     }
-    
-    setupEventListeners() {
-        this.chatToggle.addEventListener('click', (e) => {
+
+    /**
+     * Configura todos los event listeners del chat
+     * @returns {void}
+     */
+    setup_event_listeners() {
+        this.chat_toggle.addEventListener('click', (e) => {
             e.stopPropagation();
-            this.toggleChat();
+            this.toggle_chat();
         });
-        
-        this.closeButton.addEventListener('click', (e) => {
+
+        this.close_button.addEventListener('click', (e) => {
             e.stopPropagation();
-            this.closeWindow();
+            this.close_window();
         });
-        
-        this.chatInput.addEventListener('keypress', (e) => {
+
+        this.chat_input.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                this.sendMessage();
+                this.send_message();
             }
         });
-        
-        this.chatInput.addEventListener('input', () => {
-            this.toggleSendButton();
+
+        this.chat_input.addEventListener('input', () => {
+            this.toggle_send_button();
         });
-        
-        this.sendButton.addEventListener('click', () => {
-            this.sendMessage();
+
+        this.send_button.addEventListener('click', () => {
+            this.send_message();
         });
-        
+
         // Cerrar al hacer clic fuera
         document.addEventListener('click', (e) => {
-            if (this.isOpen && 
-                !this.chatWindow.contains(e.target) && 
-                !this.chatToggle.contains(e.target)) {
-                this.closeWindow();
+            if (this.is_open &&
+                !this.chat_window.contains(e.target) &&
+                !this.chat_toggle.contains(e.target)) {
+                this.close_window();
             }
         });
     }
-    
-    initLottieAnimation() {
-        const lottieContainer = document.getElementById('chat-lottie');
-        
-        if (!lottieContainer || !this.animationPath) {
+
+    /**
+     * Inicializa la animación Lottie en el botón del chat
+     * @returns {void}
+     */
+    init_lottie_animation() {
+        const lottie_container = document.getElementById('chat-lottie');
+
+        if (!lottie_container || !this.animation_path) {
             console.warn('⚠️ No se pudo cargar la animación Lottie');
             return;
         }
-        
+
         try {
-            this.lottieAnimation = lottie.loadAnimation({
-                container: lottieContainer,
+            this.lottie_animation = lottie.loadAnimation({
+                container: lottie_container,
                 renderer: 'svg',
                 loop: true,
                 autoplay: true,
-                path: this.animationPath
+                path: this.animation_path
             });
-            
+
             console.log('✅ Animación Lottie cargada');
         } catch (error) {
             console.error('❌ Error al cargar animación Lottie:', error);
         }
     }
-    
-    generateSessionId() {
-        return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+
+    /**
+     * Genera un ID único para la sesión del chat
+     * @returns {string} ID de sesión único
+     */
+    generate_session_id() {
+        return 'session_' + Date.now() + '_' + Math.random().toString(36).substring(2, 11);
     }
-    
-    displayWelcomeTime() {
-        const welcomeTime = document.getElementById('welcome-time');
-        if (welcomeTime) {
+
+    /**
+     * Muestra la hora actual en el mensaje de bienvenida
+     * @returns {void}
+     */
+    display_welcome_time() {
+        const welcome_time = document.getElementById('welcome-time');
+        if (welcome_time) {
             const now = new Date();
-            welcomeTime.textContent = now.toLocaleTimeString('es-ES', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
+            welcome_time.textContent = now.toLocaleTimeString('es-ES', {
+                hour: '2-digit',
+                minute: '2-digit'
             });
         }
     }
-    
-    toggleChat() {
-        if (this.isOpen) {
-            this.closeWindow();
+
+    /**
+     * Alterna entre abrir y cerrar el chat
+     * @returns {void}
+     */
+    toggle_chat() {
+        if (this.is_open) {
+            this.close_window();
         } else {
-            this.openWindow();
+            this.open_window();
         }
     }
-    
-    openWindow() {
-        this.chatContainer.classList.remove('chat-closed');
-        this.chatContainer.classList.add('chat-open');
-        this.isOpen = true;
-        
-        const closeIcon = document.getElementById('close-icon');
-        if (closeIcon) {
-            closeIcon.style.display = 'block';
+
+    /**
+     * Abre la ventana del chat
+     * @returns {void}
+     */
+    open_window() {
+        this.chat_container.classList.remove('chat-closed');
+        this.chat_container.classList.add('chat-open');
+        this.is_open = true;
+
+        const close_icon = document.getElementById('close-icon');
+        if (close_icon) {
+            close_icon.style.display = 'block';
         }
-        
-        if (this.lottieAnimation) {
-            this.lottieAnimation.pause();
+
+        if (this.lottie_animation) {
+            this.lottie_animation.pause();
         }
-        
+
         // Focus en el input
         setTimeout(() => {
-            this.chatInput.focus();
+            this.chat_input.focus();
         }, 300);
     }
-    
-    closeWindow() {
-        this.chatContainer.classList.remove('chat-open');
-        this.chatContainer.classList.add('chat-closed');
-        this.isOpen = false;
-        
-        const closeIcon = document.getElementById('close-icon');
-        if (closeIcon) {
-            closeIcon.style.display = 'none';
-        }
-        
-        if (this.lottieAnimation) {
-            this.lottieAnimation.goToAndPlay(0);
-        }
-    }
-    
-    toggleSendButton() {
-        const hasText = this.chatInput.value.trim().length > 0;
-        this.sendButton.disabled = !hasText;
-    }
-    
+
     /**
-     * ========== TAREA 2C: ENVIAR MENSAJE CON AUTENTICACIÓN ==========
+     * Cierra la ventana del chat
+     * @returns {void}
      */
-    async sendMessage() {
-        const message = this.chatInput.value.trim();
-        
+    close_window() {
+        this.chat_container.classList.remove('chat-open');
+        this.chat_container.classList.add('chat-closed');
+        this.is_open = false;
+
+        const close_icon = document.getElementById('close-icon');
+        if (close_icon) {
+            close_icon.style.display = 'none';
+        }
+
+        if (this.lottie_animation) {
+            this.lottie_animation.goToAndPlay(0);
+        }
+    }
+
+    /**
+     * Habilita o deshabilita el botón de enviar según el contenido del input
+     * @returns {void}
+     */
+    toggle_send_button() {
+        const has_text = this.chat_input.value.trim().length > 0;
+        this.send_button.disabled = !has_text;
+    }
+
+    /**
+     * Envía un mensaje al webhook de N8N con autenticación
+     * Gestiona el historial de conversación y muestra respuestas
+     * @async
+     * @returns {Promise<void>}
+     */
+    async send_message() {
+        const message = this.chat_input.value.trim();
+
         if (!message) {
             console.warn('⚠️ Mensaje vacío, no se envía');
             return;
         }
-        
+
         console.log('Enviando mensaje:', message);
-        
+
         // Agregar mensaje del usuario al chat
-        this.addMessage(message, 'user');
-        this.chatInput.value = '';
-        this.toggleSendButton();
-        
+        this.add_message(message, 'user');
+        this.chat_input.value = '';
+        this.toggle_send_button();
+
         // Guardar en historial
-        this.conversationHistory.push({
+        this.conversation_history.push({
             role: 'user',
             content: message
         });
-        
+
         // Mostrar indicador de escritura
-        this.showTypingIndicator();
-        
+        this.show_typing_indicator();
+
         try {
-            // TAREA 2C: Preparar headers con autenticación
+            // Preparar headers con autenticación
             const headers = {
                 'Content-Type': 'application/json',
             };
-            
+
             // Solo añadir header de autenticación si existe el token
-            if (this.authToken && this.authToken.trim() !== '') {
-                headers['X-N8N-Auth'] = this.authToken;
-                console.log('🔐 Header de autenticación añadido');
+            if (this.auth_token && this.auth_token.trim() !== '') {
+                headers['X-N8N-Auth'] = this.auth_token;
+                console.log('Header de autenticación añadido');
             } else {
-                console.log('⚠️ No se añadió header de autenticación (token vacío)');
+                console.log('No se añadió header de autenticación (token vacío)');
             }
-            
+
             // Preparar payload
             const payload = {
-                message: message,
-                sessionId: this.sessionId,
-                conversationHistory: this.conversationHistory
+                prompt: message,
+                sessionId: this.session_id,
+                history: this.conversation_history
             };
-            
-            console.log('Enviando petición a:', this.webhookUrl);
-            
+
+            console.log('Payload enviado:', payload);
+            console.log('Enviando petición a:', this.webhook_url);
+
             // Enviar al webhook con autenticación
-            const response = await fetch(this.webhookUrl, {
+            const response = await fetch(this.webhook_url, {
                 method: 'POST',
                 headers: headers,
                 body: JSON.stringify(payload),
                 mode: 'cors'
             });
-            
+
             console.log('Respuesta recibida - Status:', response.status);
-            
+
             if (!response.ok) {
                 throw new Error(`Error del servidor: ${response.status} ${response.statusText}`);
             }
-            
+
             const data = await response.json();
-            console.log('📦 Datos recibidos:', data);
-            
+            console.log('Datos recibidos:', data);
+
             // Ocultar indicador de escritura
-            this.hideTypingIndicator();
-            
-            // Agregar respuesta del bot
-            const botMessage = data.response || data.message || data.output || 
-                               'Lo siento, hubo un error al procesar tu mensaje.';
-            this.addMessage(botMessage, 'bot');
-            
+            this.hide_typing_indicator();
+
+            // Adaptarse a la estructura de respuesta de N8N
+            const bot_message = data.output || data.response || data.message || data.text ||
+                            'Lo siento, hubo un error al procesar tu mensaje.';
+
+            this.add_message(bot_message, 'bot');
+
             // Guardar en historial
-            this.conversationHistory.push({
+            this.conversation_history.push({
                 role: 'assistant',
-                content: botMessage
+                content: bot_message
             });
-            
+
             console.log('✅ Mensaje procesado correctamente');
-            
+
         } catch (error) {
             console.error('❌ Error al enviar mensaje:', error);
-            this.hideTypingIndicator();
-            
+            this.hide_typing_indicator();
+
             // Mensaje de error amigable
-            const errorMessage = error.message.includes('Failed to fetch') 
+            const error_message = error.message.includes('Failed to fetch')
                 ? 'No se pudo conectar con el servidor. Por favor, verifica tu conexión a internet.'
                 : 'Lo siento, hubo un error al procesar tu mensaje. Por favor, intenta de nuevo.';
-            
-            this.addMessage(errorMessage, 'bot');
+
+            this.add_message(error_message, 'bot');
         }
     }
-    
-    addMessage(text, type) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${type}`;
-        
-        const bubbleDiv = document.createElement('div');
-        bubbleDiv.className = 'message-bubble';
-        bubbleDiv.textContent = text;
-        
-        const timeDiv = document.createElement('div');
-        timeDiv.className = 'message-time';
+
+    /**
+     * Añade un mensaje al área de chat
+     * @param {string} text - Texto del mensaje
+     * @param {string} type - Tipo de mensaje ('user' o 'bot')
+     * @returns {void}
+     */
+    add_message(text, type) {
+        const message_div = document.createElement('div');
+        message_div.className = `message ${type}`;
+
+        const bubble_div = document.createElement('div');
+        bubble_div.className = 'message-bubble';
+        bubble_div.textContent = text;
+
+        const time_div = document.createElement('div');
+        time_div.className = 'message-time';
         const now = new Date();
-        timeDiv.textContent = now.toLocaleTimeString('es-ES', { 
-            hour: '2-digit', 
-            minute: '2-digit' 
+        time_div.textContent = now.toLocaleTimeString('es-ES', {
+            hour: '2-digit',
+            minute: '2-digit'
         });
-        
-        messageDiv.appendChild(bubbleDiv);
-        messageDiv.appendChild(timeDiv);
-        
-        this.chatMessages.appendChild(messageDiv);
-        
+
+        message_div.appendChild(bubble_div);
+        message_div.appendChild(time_div);
+
+        this.chat_messages.appendChild(message_div);
+
         // Scroll al final
-        this.scrollToBottom();
+        this.scroll_to_bottom();
     }
-    
-    showTypingIndicator() {
-        if (this.typingIndicator) {
-            this.typingIndicator.style.display = 'flex';
-            this.scrollToBottom();
+
+    /**
+     * Muestra el indicador de escritura
+     * @returns {void}
+     */
+    show_typing_indicator() {
+        if (this.typing_indicator) {
+            this.typing_indicator.style.display = 'flex';
+            this.scroll_to_bottom();
         }
     }
-    
-    hideTypingIndicator() {
-        if (this.typingIndicator) {
-            this.typingIndicator.style.display = 'none';
+
+    /**
+     * Oculta el indicador de escritura
+     * @returns {void}
+     */
+    hide_typing_indicator() {
+        if (this.typing_indicator) {
+            this.typing_indicator.style.display = 'none';
         }
     }
-    
-    scrollToBottom() {
+
+    /**
+     * Hace scroll hasta el final del área de mensajes
+     * @returns {void}
+     */
+    scroll_to_bottom() {
         setTimeout(() => {
-            this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+            this.chat_messages.scrollTop = this.chat_messages.scrollHeight;
         }, 100);
     }
 }
 
-// Inicializar cuando el DOM esté listo
+/**
+ * Inicializa el chat modal cuando el DOM está listo
+ */
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         new WlandChatModal();
