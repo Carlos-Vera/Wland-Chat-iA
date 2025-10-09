@@ -3,7 +3,7 @@
  * Plugin Name: Wland Chat iA
  * Plugin URI: https://github.com/Carlos-Vera/Wland-Chat-iA
  * Description: Integración profesional de chat con IA mediante bloque Gutenberg, con horarios personalizables y páginas excluidas. Desarrollado por Carlos Vera para Weblandia.es
- * Version: 1.0.0
+ * Version: 1.0.2
  * Author: Carlos Vera, Mikel Marqués
  * Author URI: https://weblandia.es
  * Text Domain: wland-chat
@@ -12,7 +12,7 @@
  * Requires PHP: 7.4
  * License: Commercial
  * License URI: LICENSE
- * 
+ *
  * GitHub Plugin URI: Carlos-Vera/Wland-Chat-iA
  * GitHub Branch: main
  */
@@ -25,7 +25,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Definir constantes del plugin
-define('WLAND_CHAT_VERSION', '1.0.0');
+define('WLAND_CHAT_VERSION', '1.0.2');
 define('WLAND_CHAT_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WLAND_CHAT_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('WLAND_CHAT_PLUGIN_FILE', __FILE__);

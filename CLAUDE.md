@@ -446,5 +446,5 @@ Antes de marcar una tarea como completada, verifica:
 ---
 
 **Última actualización**: 2025-01-09
-**Versión del plugin**: 1.0.0
+**Versión del plugin**: 1.0.2
 **Mantenedor**: Claude Code con supervisión de Carlos Vera (BravesLab)
