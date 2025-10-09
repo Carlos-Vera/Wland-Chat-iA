@@ -47,7 +47,7 @@ class Settings {
             'wland_chat_general_section',
             __('Configuración General', 'wland-chat'),
             array($this, 'general_section_callback'),
-            'wland-chat-settings'
+            'wland_chat_settings'
         );
         
         // Global Enable
@@ -176,7 +176,7 @@ class Settings {
             'wland_chat_exclusions_section',
             __('Páginas Excluidas', 'wland-chat'),
             array($this, 'exclusions_section_callback'),
-            'wland-chat-settings'
+            'wland_chat_settings'
         );
         
         register_setting('wland_chat_settings', $this->option_prefix . 'excluded_pages', array(
@@ -198,7 +198,7 @@ class Settings {
             'wland_chat_availability_section',
             __('Horarios de Disponibilidad', 'wland-chat'),
             array($this, 'availability_section_callback'),
-            'wland-chat-settings'
+            'wland_chat_settings'
         );
         
         // Availability Enabled

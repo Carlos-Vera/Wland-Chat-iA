@@ -245,6 +245,11 @@ class WlandChatScreen {
         this.show_typing_indicator();
 
         try {
+            // Validar webhook URL
+            if (!this.webhook_url || this.webhook_url.trim() === '') {
+                throw new Error('WEBHOOK_NOT_CONFIGURED: La URL del webhook no está configurada en los ajustes del plugin.');
+            }
+
             // Preparar headers con autenticación
             const headers = {
                 'Content-Type': 'application/json',
@@ -258,14 +263,15 @@ class WlandChatScreen {
                 console.log('⚠️ No se añadió header de autenticación (token vacío)');
             }
 
-            // Preparar payload
+            // Preparar payload para N8N Chat (espera chatInput)
             const payload = {
-                prompt: message,
-                sessionId: this.session_id,
-                history: this.conversation_history
+                chatInput: message,
+                sessionId: this.session_id
             };
 
-            console.log('📡 Enviando petición a:', this.webhook_url);
+            console.log('📤 Payload enviado:', payload);
+            console.log('🌐 Enviando petición a:', this.webhook_url);
+            console.log('📋 Headers:', headers);
 
             // Enviar al webhook con autenticación
             const response = await fetch(this.webhook_url, {
@@ -275,21 +281,84 @@ class WlandChatScreen {
                 mode: 'cors'
             });
 
-            console.log('📥 Respuesta recibida - Status:', response.status);
+            console.log('📥 Respuesta recibida:');
+            console.log('   - Status:', response.status);
+            console.log('   - Status Text:', response.statusText);
+            console.log('   - Headers:', Object.fromEntries(response.headers.entries()));
 
-            if (!response.ok) {
-                throw new Error(`Error del servidor: ${response.status} ${response.statusText}`);
+            // Capturar el cuerpo de la respuesta antes de verificar
+            let response_text = '';
+            try {
+                response_text = await response.text();
+                console.log('   - Body (raw):', response_text);
+            } catch (text_error) {
+                console.error('❌ Error al leer el cuerpo de la respuesta:', text_error);
             }
 
-            const data = await response.json();
-            console.log('📦 Datos recibidos:', data);
+            if (!response.ok) {
+                // Error del servidor - construir mensaje descriptivo
+                let error_details = `ERROR HTTP ${response.status}: ${response.statusText}`;
+
+                if (response.status === 401) {
+                    error_details = 'ERROR 401 UNAUTHORIZED: Token de autenticación inválido o expirado.';
+                } else if (response.status === 403) {
+                    error_details = 'ERROR 403 FORBIDDEN: Acceso denegado. Verifica el token de autenticación.';
+                } else if (response.status === 404) {
+                    error_details = 'ERROR 404 NOT FOUND: La URL del webhook no existe.';
+                } else if (response.status === 500) {
+                    error_details = 'ERROR 500 INTERNAL SERVER ERROR: Error en el servidor N8N.';
+                } else if (response.status === 502) {
+                    error_details = 'ERROR 502 BAD GATEWAY: El servidor N8N no responde.';
+                } else if (response.status === 503) {
+                    error_details = 'ERROR 503 SERVICE UNAVAILABLE: El servidor N8N está temporalmente no disponible.';
+                }
+
+                console.error('❌', error_details);
+                console.error('   Respuesta del servidor:', response_text);
+
+                throw new Error(error_details + (response_text ? `\n\nRespuesta: ${response_text.substring(0, 200)}` : ''));
+            }
+
+            // Intentar parsear JSON
+            let data;
+            try {
+                data = JSON.parse(response_text);
+                console.log('✅ JSON parseado correctamente:', data);
+            } catch (json_error) {
+                console.error('❌ Error al parsear JSON:', json_error);
+                console.error('   Respuesta recibida:', response_text);
+                throw new Error(`JSON_PARSE_ERROR: La respuesta del servidor no es JSON válido.\n\nRespuesta: ${response_text.substring(0, 200)}`);
+            }
 
             // Ocultar indicador de escritura
             this.hide_typing_indicator();
 
-            // Adaptarse a la estructura de respuesta de N8N
-            const bot_message = data.output || data.response || data.message || data.text ||
-                               'Lo siento, hubo un error al procesar tu mensaje.';
+            // Adaptarse a diferentes formatos de respuesta de N8N
+            // El módulo de chat N8N puede devolver varios formatos
+            let bot_message = null;
+
+            if (data.output) {
+                bot_message = data.output;
+            } else if (data.response) {
+                bot_message = data.response;
+            } else if (data.message) {
+                bot_message = data.message;
+            } else if (data.text) {
+                bot_message = data.text;
+            } else if (typeof data === 'string') {
+                // Si la respuesta es directamente un string
+                bot_message = data;
+            } else if (data.data && typeof data.data === 'string') {
+                // Si viene en un campo "data"
+                bot_message = data.data;
+            }
+
+            if (!bot_message) {
+                console.error('❌ No se encontró mensaje en la respuesta');
+                console.error('   Estructura recibida:', data);
+                console.error('   Tipo de dato:', typeof data);
+                throw new Error(`RESPONSE_FORMAT_ERROR: No se encontró el mensaje en la respuesta.\n\nCampos disponibles: ${Object.keys(data).join(', ')}\n\nRespuesta completa: ${JSON.stringify(data).substring(0, 200)}`);
+            }
 
             this.add_message(bot_message, 'bot');
 
@@ -302,15 +371,70 @@ class WlandChatScreen {
             console.log('✅ Mensaje procesado correctamente');
 
         } catch (error) {
-            console.error('❌ Error al enviar mensaje:', error);
+            console.error('❌ ERROR COMPLETO:', error);
+            console.error('   Stack:', error.stack);
             this.hide_typing_indicator();
 
-            // Mensaje de error amigable
-            const error_message = error.message.includes('Failed to fetch')
-                ? 'No se pudo conectar con el servidor. Por favor, verifica tu conexión a internet.'
-                : 'Lo siento, hubo un error al procesar tu mensaje. Por favor, intenta de nuevo.';
+            // Construir mensaje de error descriptivo
+            let user_message = '❌ Error al procesar tu mensaje:\n\n';
+            let technical_details = '';
 
-            this.add_message(error_message, 'bot');
+            if (error.message.includes('Failed to fetch')) {
+                user_message += '🔌 **No se pudo conectar con el servidor**\n\n';
+                user_message += 'Posibles causas:\n';
+                user_message += '• Sin conexión a internet\n';
+                user_message += '• El servidor N8N está caído\n';
+                user_message += '• Problema de CORS\n';
+                user_message += '• URL del webhook incorrecta\n\n';
+                technical_details = `URL: ${this.webhook_url}\nError: ${error.message}`;
+            } else if (error.message.includes('WEBHOOK_NOT_CONFIGURED')) {
+                user_message += '⚙️ **Webhook no configurado**\n\n';
+                user_message += 'El administrador debe configurar la URL del webhook en:\n';
+                user_message += 'WordPress Admin > Ajustes > Wland Chat iA\n\n';
+                technical_details = error.message;
+            } else if (error.message.includes('401') || error.message.includes('403')) {
+                user_message += '🔐 **Error de autenticación**\n\n';
+                user_message += 'El token de autenticación es inválido o ha expirado.\n';
+                user_message += 'Contacta al administrador para verificar el token N8N.\n\n';
+                technical_details = error.message;
+            } else if (error.message.includes('404')) {
+                user_message += '🔍 **Webhook no encontrado**\n\n';
+                user_message += 'La URL del webhook no existe o es incorrecta.\n';
+                user_message += 'Verifica la URL en los ajustes del plugin.\n\n';
+                technical_details = `URL: ${this.webhook_url}\n${error.message}`;
+            } else if (error.message.includes('JSON_PARSE_ERROR')) {
+                user_message += '📦 **Respuesta inválida del servidor**\n\n';
+                user_message += 'El servidor N8N no devolvió un JSON válido.\n';
+                user_message += 'Verifica la configuración del workflow en N8N.\n\n';
+                technical_details = error.message;
+            } else if (error.message.includes('RESPONSE_FORMAT_ERROR')) {
+                user_message += '📋 **Formato de respuesta incorrecto**\n\n';
+                user_message += 'El servidor devolvió una respuesta pero sin el campo esperado.\n';
+                user_message += 'El webhook debe devolver: {output: "mensaje"} o {response: "mensaje"}\n\n';
+                technical_details = error.message;
+            } else if (error.message.includes('500') || error.message.includes('502') || error.message.includes('503')) {
+                user_message += '🔧 **Error del servidor**\n\n';
+                user_message += 'El servidor N8N tiene un problema interno.\n';
+                user_message += 'Contacta al administrador del servidor.\n\n';
+                technical_details = error.message;
+            } else {
+                user_message += '⚠️ **Error desconocido**\n\n';
+                user_message += 'Ocurrió un error inesperado. Por favor, intenta de nuevo.\n\n';
+                technical_details = `${error.message}\n\nStack: ${error.stack}`;
+            }
+
+            user_message += '📋 **Detalles técnicos:**\n';
+            user_message += '```\n' + technical_details + '\n```\n\n';
+            user_message += `🕐 ${new Date().toLocaleString('es-ES')}`;
+
+            this.add_message(user_message, 'bot');
+
+            // Log adicional para el administrador
+            console.log('📊 INFORMACIÓN DE DEBUG:');
+            console.log('   - Webhook URL:', this.webhook_url);
+            console.log('   - Auth Token configurado:', this.auth_token ? 'Sí' : 'No');
+            console.log('   - Session ID:', this.session_id);
+            console.log('   - Historial (mensajes):', this.conversation_history.length);
         }
     }
 
