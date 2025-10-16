@@ -1,6 +1,6 @@
 <?php
 /**
- * Plantilla para modo Pantalla Completa
+ * panatella para modo Pantalla compleat
  * 
  * @package WlandChat
  */

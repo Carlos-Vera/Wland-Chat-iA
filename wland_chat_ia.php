@@ -3,7 +3,7 @@
  * Plugin Name: Wland Chat iA
  * Plugin URI: https://github.com/Carlos-Vera/Wland-Chat-iA
  * Description: Integración profesional de chat con IA mediante bloque Gutenberg, con horarios personalizables y páginas excluidas. Desarrollado por Carlos Vera para Weblandia.es
- * Version: 1.0.2
+ * Version: 1.1.1
  * Author: Carlos Vera, Mikel Marqués
  * Author URI: https://weblandia.es
  * Text Domain: wland-chat
@@ -25,7 +25,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Definir constantes del plugin
-define('WLAND_CHAT_VERSION', '1.0.2');
+define('WLAND_CHAT_VERSION', '1.1.1');
 define('WLAND_CHAT_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WLAND_CHAT_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('WLAND_CHAT_PLUGIN_FILE', __FILE__);
@@ -64,6 +64,7 @@ class WlandChatIA {
      */
     private function load_dependencies() {
         require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class_helpers.php';
+        require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class_cookie_manager.php';
         require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class_settings.php';
         require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class_customizer.php';
         require_once WLAND_CHAT_PLUGIN_DIR . 'includes/class_block.php';
@@ -106,6 +107,9 @@ class WlandChatIA {
             'availability_timezone' => 'Europe/Madrid',
             'availability_message' => __('Nuestro horario de atención es de 9:00 a 18:00. Déjanos tu mensaje y te responderemos lo antes posible.', 'wland-chat'),
             'display_mode' => 'modal',
+            'gdpr_enabled' => false,
+            'gdpr_message' => __('Este sitio utiliza cookies para mejorar tu experiencia y proporcionar un servicio de chat personalizado. Al continuar navegando, aceptas nuestra política de cookies.', 'wland-chat'),
+            'gdpr_accept_text' => __('Aceptar', 'wland-chat'),
         );
         
         foreach ($defaults as $key => $value) {
@@ -149,6 +153,7 @@ class WlandChatIA {
      * Inicializar componentes
      */
     public function init_components() {
+        WlandCookieManager::get_instance();
         Settings::get_instance();
         Customizer::get_instance();
         Block::get_instance();

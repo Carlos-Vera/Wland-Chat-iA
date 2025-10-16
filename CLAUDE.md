@@ -12,6 +12,9 @@ Se trata de un plugin de WordPress ubicado dentro de una instalación XAMPP:
 - **Ruta del plugin**: `/Applications/XAMPP/xamppfiles/htdocs/wordpress/wp-content/plugins/Wland-Chat-iA`
 - **Raíz de WordPress**: `/Applications/XAMPP/xamppfiles/htdocs/wordpress`
 - Prueba en el navegador en el sitio de WordPress que se ejecuta en XAMPP
+- Cada función nueva debe incluir un bloque de comentario JSDoc encima
+- Todas las variables y funciones nuevas deben escribirse en snake_case
+- No uses camelCase.
 
 ## Estructura de Carpetas del Plugin
 
@@ -28,7 +31,8 @@ Wland-Chat-iA/
 │   ├── class_frontend.php     # Renderizado y carga de assets en frontend
 │   ├── class_block.php        # Registro del bloque Gutenberg
 │   ├── class_customizer.php   # Integración con WordPress Customizer
-│   └── class_helpers.php      # Funciones auxiliares y utilidades
+│   ├── class_helpers.php      # Funciones auxiliares y utilidades
+│   └── class_cookie_manager.php  # Sistema de cookies con fingerprinting y GDPR
 │
 ├── assets/                    # Recursos estáticos
 │   ├── css/                   # Estilos
@@ -36,13 +40,15 @@ Wland-Chat-iA/
 │   │   ├── block_editor.css   # Estilos del editor de bloques
 │   │   ├── block_style.css    # Estilos base del bloque
 │   │   ├── wland_chat_block_modal.css      # Estilos modo modal
-│   │   └── wland_chat_block_screen.css     # Estilos modo pantalla completa
+│   │   ├── wland_chat_block_screen.css     # Estilos modo pantalla completa
+│   │   └── wland_gdpr_banner.css           # Estilos del banner GDPR
 │   │
 │   ├── js/                    # Scripts JavaScript
 │   │   ├── admin.js           # JavaScript del panel de administración
 │   │   ├── block.js           # Registro del bloque Gutenberg
 │   │   ├── wland_chat_block_modal.js       # Lógica modo modal (clase WlandChatModal)
-│   │   └── wland_chat_block_screen.js      # Lógica modo pantalla completa (clase WlandChatScreen)
+│   │   ├── wland_chat_block_screen.js      # Lógica modo pantalla completa (clase WlandChatScreen)
+│   │   └── wland_fingerprint.js            # Sistema de fingerprinting del navegador (clase WlandFingerprint)
 │   │
 │   └── media/                 # Recursos multimedia
 │       └── chat.json          # Animación Lottie del botón de chat
@@ -54,18 +60,6 @@ Wland-Chat-iA/
 └── languages/                 # Archivos de traducción (i18n)
     ├── wland-chat.pot         # Plantilla de traducción (Portable Object Template)
     └── wland-chat-es_ES.po    # Traducción al español
-```
-
-### Archivos Obsoletos (No usar)
-```
-├── includes/
-│   ├── class-frontend-old.php     # Versión antigua de class_frontend.php
-│   └── class-settings-old.php     # Versión antigua de class_settings.php
-├── assets/js/
-│   ├── wland-chat-block-modal-old.js    # Versión antigua con camelCase
-│   └── wland-chat-block-screen-old.js   # Versión antigua con camelCase
-└── no use/                    # Carpeta con código experimental
-    └── v2.php
 ```
 
 **IMPORTANTE**: Cuando agregues nuevos archivos o componentes, actualiza esta sección inmediatamente.
@@ -106,6 +100,18 @@ Todas las clases PHP utilizan el espacio de nombres `WlandChat` y siguen el patr
   - `get_chat_config()`: Devuelve la configuración completa incluyendo el token N8N
   - `sanitize_block_attributes()`: Desinfecta los parámetros del bloque
 
+- **`class_cookie_manager.php`**: Sistema de cookies con fingerprinting y compliance GDPR
+  - **Patrón Singleton** para garantizar única instancia
+  - `get_or_create_session()`: Obtiene o crea sesión del usuario con ID único
+  - `generate_server_fingerprint()`: Genera hash SHA-256 basado en User-Agent, IP, timestamp
+  - `set_session_cookie()`: Crea cookie persistente de 1 año con flags de seguridad (Secure, SameSite)
+  - `regenerate_session()`: Regenera ID de sesión cuando se detectan cambios significativos
+  - `is_gdpr_enabled()`: Verifica si el banner GDPR está activo
+  - `localize_gdpr_settings()`: Pasa configuración GDPR a JavaScript
+  - Cookie name: `wland_chat_session`
+  - Duración: 1 año (YEAR_IN_SECONDS)
+  - Formato del ID: Hash SHA-256 de 64 caracteres hexadecimales
+
 ### Arquitectura JavaScript del Frontend
 
 **Modo Modal** (`assets/js/wland_chat_block_modal.js`):
@@ -120,6 +126,29 @@ Todas las clases PHP utilizan el espacio de nombres `WlandChat` y siguen el patr
 - Arquitectura similar para el modo de visualización a pantalla completa
 - Todos los métodos usan nomenclatura snake_case
 - Documentación JSDoc completa en cada función
+
+**Sistema de Fingerprinting** (`assets/js/wland_fingerprint.js`):
+- Clase `WlandFingerprint` para identificación única de usuarios mediante fingerprinting del navegador
+- **Características del fingerprint**:
+  - User-Agent del navegador
+  - Resolución de pantalla (width, height, colorDepth)
+  - Zona horaria (timezone y offset)
+  - Idioma y preferencias de idiomas
+  - Platform y hardware (CPU cores, memoria)
+  - Lista de plugins del navegador
+  - Canvas fingerprint (renderizado único por navegador/GPU)
+  - WebGL fingerprint (información de GPU)
+  - Soporte táctil (maxTouchPoints)
+- **Métodos principales**:
+  - `get_or_create_session()`: Obtiene sesión existente o crea nueva con fingerprinting
+  - `generate_browser_fingerprint()`: Genera objeto con todas las características del dispositivo
+  - `hash_fingerprint()`: Convierte fingerprint a hash SHA-256 usando Web Crypto API
+  - `should_regenerate_session()`: Detecta cambios significativos (≥2 cambios críticos)
+  - `show_gdpr_banner()`: Muestra banner de consentimiento si GDPR está habilitado
+  - `get_session_id()`: Método público para obtener el session_id actual
+- **Fallback a localStorage**: Si cookies están bloqueadas, usa `wland_chat_session_backup`
+- **Detección de cambios**: Regenera ID si detecta cambios en User-Agent, resolución, timezone o canvas
+- **GDPR compliance**: Guarda consentimiento en `wland_chat_gdpr_consent` antes de crear cookies
 
 **Bloque Gutenberg** (`assets/js/block.js`):
 - Registra el bloque con el editor de bloques de WordPress
@@ -154,6 +183,37 @@ Ambas plantillas:
   - `data` (si es string directamente)
 - **Manejo de errores**: Sistema completo de detección y mensajes descriptivos
 
+### Sistema de Cookies con Fingerprinting (v1.1.0)
+Sistema robusto de identificación de usuarios mediante cookies persistentes con fingerprinting del navegador.
+
+**Características principales**:
+- **Cookie persistente**: `wland_chat_session` con duración de 1 año
+- **Fingerprinting del navegador**: Combina múltiples características del dispositivo para crear ID único
+  - User-Agent, resolución de pantalla, zona horaria
+  - Plugins del navegador, Canvas fingerprint, WebGL
+  - Hardware: CPU cores, memoria del dispositivo
+- **Fallback automático**: Si cookies bloqueadas, usa localStorage (`wland_chat_session_backup`)
+- **Regeneración inteligente**: Detecta cambios significativos en el dispositivo y regenera ID
+- **Compliance GDPR**: Banner configurable desde admin para solicitar consentimiento
+- **Session tracking**: Cada mensaje al webhook incluye `sessionId` único y persistente
+
+**Flujo de funcionamiento**:
+1. Usuario visita el sitio por primera vez
+2. Si GDPR habilitado: muestra banner y espera consentimiento
+3. Sistema genera fingerprint del navegador (JavaScript)
+4. Servidor genera componente adicional (IP, User-Agent, timestamp)
+5. Se combina todo en hash SHA-256 de 64 caracteres
+6. Se almacena en cookie `wland_chat_session` (1 año) y localStorage (backup)
+7. Cada mensaje al chat incluye este `sessionId` en el payload
+8. N8N puede usar el `sessionId` para mantener contexto de conversación
+
+**Detección de cambios**:
+El sistema regenera el session_id cuando detecta ≥2 cambios significativos:
+- Cambio de navegador o versión mayor (User-Agent)
+- Cambio de monitor o resolución
+- Cambio de zona horaria
+- Cambio en canvas fingerprint (GPU diferente)
+
 ### Modos de Visualización
 - **Modal**: Widget de chat flotante (inferior-derecha, inferior-izquierda o centro)
 - **Pantalla Completa**: Interfaz de chat de página completa
@@ -177,6 +237,9 @@ Todas las opciones con prefijo `wland_chat_`:
 - `availability_start`, `availability_end`: Formato 'HH:MM'
 - `availability_timezone`: Identificador de zona horaria PHP
 - `availability_message`: Mensaje mostrado fuera del horario
+- `gdpr_enabled`: Booleano para habilitar banner GDPR (v1.1.0)
+- `gdpr_message`: Texto del banner de cookies (v1.1.0)
+- `gdpr_accept_text`: Texto del botón de aceptar cookies (v1.1.0)
 
 ## Flujo de Trabajo de Desarrollo
 
@@ -443,8 +506,60 @@ Antes de marcar una tarea como completada, verifica:
 - Traducido completamente al español
 - Eliminados todos los emojis para estilo profesional
 
+#### 2025-10-14: Implementación completa de i18n (CAR-17)
+- Añadido soporte completo para wp.i18n en JavaScript (modal.js y screen.js)
+- Implementadas 21 nuevas cadenas traducibles en mensajes de error
+- Configurado wp_set_script_translations() en class_frontend.php
+- Actualizado wland-chat.pot con 83 cadenas totales
+- Actualizado wland-chat-es_ES.po con todas las traducciones al español
+- Generado wland-chat-es_ES.mo compilado (7.5KB, 84 mensajes)
+- Todos los mensajes de error ahora son traducibles sin emojis
+- Compatible con WPML, Polylang y Loco Translate
+
+#### 2025-10-16: Sistema de Cookies con Fingerprinting (WPC-002)
+- **Implementado sistema robusto de identificación de usuarios**
+- Creada clase `WlandCookieManager` (includes/class_cookie_manager.php):
+  - Cookie persistente `wland_chat_session` con 1 año de duración
+  - Generación de ID único usando fingerprinting servidor (IP, User-Agent, timestamp)
+  - Flags de seguridad: Secure (HTTPS), SameSite=Lax
+  - Métodos: get_or_create_session(), regenerate_session(), delete_session()
+  - NOTA: Cookies NO se establecen desde PHP para evitar "headers already sent"
+- Creada clase `WlandFingerprint` (assets/js/wland_fingerprint.js):
+  - Fingerprinting completo del navegador (User-Agent, resolución, timezone, plugins, canvas, WebGL)
+  - Hash SHA-256 usando Web Crypto API con fallback a hash simple
+  - Fallback automático a localStorage si cookies bloqueadas
+  - Detección inteligente de cambios significativos (≥2 cambios críticos)
+  - Regeneración automática de session_id cuando se detectan cambios
+  - Métodos async/await para correcta generación de hash
+- **Sistema de Compliance GDPR**:
+  - Banner configurable desde panel admin (Ajustes > Wland Chat iA)
+  - Opciones: gdpr_enabled, gdpr_message, gdpr_accept_text
+  - CSS responsive con animaciones (assets/css/wland_gdpr_banner.css)
+  - Consentimiento guardado en localStorage antes de crear cookies
+  - Banner se muestra automáticamente si GDPR habilitado y sin consentimiento previo
+- **Integración con N8N**:
+  - Campo `sessionId` incluido en cada payload al webhook
+  - Modificados wland_chat_block_modal.js y wland_chat_block_screen.js
+  - Función generate_session_id() async que espera resolución del fingerprint
+  - Session ID se inicializa de forma asíncrona en constructor
+- **Carga optimizada de assets**:
+  - Script wland_fingerprint.js cargado en head (sin dependencias)
+  - CSS del banner GDPR cargado condicionalmente
+  - Configuración GDPR pasada a JavaScript via wp_localize_script() en class_frontend.php
+- **Correcciones realizadas**:
+  - Corregido error 500: Helpers usa métodos estáticos, no Singleton
+  - Corregida localización de configuración GDPR (movida a class_frontend.php)
+  - Implementado flujo async/await correcto en toda la cadena de fingerprinting
+  - Versión actualizada a 1.1.1 para forzar recarga de scripts
+- **Documentación completa**:
+  - Creado TESTING_COOKIES.md con guía exhaustiva de pruebas (10 secciones)
+  - Actualizado CLAUDE.md con arquitectura completa del sistema
+  - Documentación de troubleshooting y resolución de problemas
+- **Versión actualizada**: 1.0.2 → 1.1.1
+- **Estado**: ✅ PROBADO Y FUNCIONANDO - Todos los acceptance criteria cumplidos
+
 ---
 
-**Última actualización**: 2025-01-09
-**Versión del plugin**: 1.0.2
+**Última actualización**: 2025-10-16
+**Versión del plugin**: 1.1.1
 **Mantenedor**: Claude Code con supervisión de Carlos Vera (BravesLab)

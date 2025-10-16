@@ -7,6 +7,8 @@ Plugin WordPress profesional para integrar chat con inteligencia artificial medi
 ### Funcionalidades Principales
 - **Bloque Gutenberg** para personalizar en cualquier página o entrada
 - **Integración con N8N** mediante webhooks configurables
+- **Sistema de Cookies con Fingerprinting** para identificación única de usuarios
+- **Compliance GDPR** con banner de consentimiento configurable
 - **Horarios de disponibilidad** con zonas horarias
 - **Páginas excluidas** mediante selector múltiple
 - **Dos modos de visualización**: Modal y Pantalla completa
@@ -257,7 +259,145 @@ El plugin incluye `uninstall.php` que:
 - Limpia metadatos de posts y usuarios
 - Limpia caché de WordPress
 
+## Sistema de Cookies con Fingerprinting
+
+**Versión 1.1.0+** incluye un sistema robusto de identificación de usuarios mediante cookies persistentes con fingerprinting del navegador.
+
+### Características
+
+#### Identificación Única de Usuarios
+- **Cookie persistente** `wland_chat_session` con duración de 1 año
+- **Hash SHA-256** de 64 caracteres hexadecimales
+- **Fingerprinting multi-característica** del navegador y dispositivo
+- **Fallback automático** a localStorage si las cookies están bloqueadas
+
+#### Características del Fingerprint
+
+El sistema genera un ID único basado en:
+- User-Agent del navegador
+- Resolución de pantalla (width × height × colorDepth)
+- Zona horaria y offset
+- Idioma y preferencias de idiomas
+- Platform y arquitectura del sistema
+- Hardware (CPU cores, memoria del dispositivo)
+- Lista de plugins del navegador
+- **Canvas fingerprint** (renderizado único por GPU)
+- **WebGL fingerprint** (información de la tarjeta gráfica)
+- Soporte táctil (maxTouchPoints)
+
+#### Compliance GDPR
+
+Banner de consentimiento configurable desde el panel de administración:
+
+**Configuración**: WordPress Admin > Ajustes > Wland Chat iA > "Compliance GDPR / Cookies"
+
+**Opciones disponibles**:
+- **Habilitar Banner GDPR**: Activa/desactiva el banner de consentimiento
+- **Mensaje del Banner**: Texto personalizable del aviso de cookies
+- **Texto del Botón**: Personaliza el botón de aceptación (ej: "Aceptar", "Entendido")
+
+El consentimiento se guarda en localStorage antes de crear cualquier cookie.
+
+#### Detección Inteligente de Cambios
+
+El sistema regenera automáticamente el session_id cuando detecta **2 o más cambios significativos**:
+- Cambio de navegador o versión mayor
+- Cambio de resolución de pantalla o monitor
+- Cambio de zona horaria
+- Cambio en canvas fingerprint (GPU diferente)
+
+### Integración con N8N
+
+Cada mensaje enviado al webhook de N8N incluye el campo `sessionId`:
+
+```json
+{
+  "chatInput": "Mensaje del usuario",
+  "sessionId": "9f12e684d6abd5ef281b2f33cff298d72f337083ceeb843d61ce84efe599486a"
+}
+```
+
+Esto permite:
+- **Mantener contexto de conversación** entre sesiones
+- **Identificar usuarios únicos** sin datos personales
+- **Analítica de uso** por dispositivo/navegador
+- **Prevención de abusos** mediante rate limiting
+
+### Verificación
+
+#### Cookies (DevTools > Application > Cookies)
+```
+Name:      wland_chat_session
+Value:     [hash de 64 caracteres]
+Domain:    tu-dominio.com
+Path:      /
+Expires:   [1 año desde creación]
+SameSite:  Lax
+Secure:    ✓ (solo en HTTPS)
+```
+
+#### Local Storage (DevTools > Application > Local Storage)
+```
+wland_chat_session_backup:  [hash de 64 caracteres] (fallback)
+wland_chat_fingerprint:     [objeto JSON con datos del fingerprint]
+wland_chat_gdpr_consent:    accepted
+```
+
+#### Consola del Navegador
+```javascript
+[Wland Fingerprint] Nueva sesión creada: 9f12e684d6abd5ef281b2f...
+[Wland Chat Modal] Usando session_id con fingerprinting: 9f12e684d6abd5ef281b2f...
+```
+
+### Implementación Técnica
+
+#### Archivos del Sistema
+
+**PHP**:
+- `includes/class_cookie_manager.php` - Gestión de cookies y configuración GDPR
+
+**JavaScript**:
+- `assets/js/wland_fingerprint.js` - Clase WlandFingerprint con generación de hash
+
+**CSS**:
+- `assets/css/wland_gdpr_banner.css` - Estilos del banner GDPR responsive
+
+#### Flujo de Funcionamiento
+
+1. Usuario visita el sitio por primera vez
+2. Si GDPR habilitado → Muestra banner y espera consentimiento
+3. Genera fingerprint del navegador (múltiples características)
+4. Calcula hash SHA-256 usando Web Crypto API
+5. Crea cookie `wland_chat_session` (1 año de duración)
+6. Guarda backup en localStorage por si cookies bloqueadas
+7. Cada mensaje incluye `sessionId` en el payload a N8N
+8. En visitas futuras, verifica cambios y regenera si es necesario
+
+### Privacidad y Seguridad
+
+- **No se almacenan datos personales** (nombre, email, IP, etc.)
+- **Hash irreversible** - imposible obtener datos originales del fingerprint
+- **Compliance GDPR** con consentimiento explícito opcional
+- **Flags de seguridad**: Secure (HTTPS), SameSite=Lax
+- **Fallback respetuoso** si usuario bloquea cookies
+
+### Documentación Adicional
+
+Para pruebas exhaustivas, consulta: `TESTING_COOKIES.md`
+
 ## Changelog
+
+### 1.1.1 (2025-10-16)
+- ✨ Sistema de cookies con fingerprinting del navegador
+- ✨ Compliance GDPR con banner configurable
+- ✨ Hash SHA-256 para identificación única
+- ✨ Fallback automático a localStorage
+- ✨ Detección inteligente de cambios de dispositivo
+- ✨ Integración de sessionId en payload N8N
+- 🐛 Corregido error 500 al cargar frontend
+- 🐛 Corregida localización de configuración GDPR
+- 🐛 Implementado flujo async/await correcto
+- 📝 Documentación completa en TESTING_COOKIES.md
 
 ### 1.0.0 (2025-01-XX)
 - ✨ Versión inicial

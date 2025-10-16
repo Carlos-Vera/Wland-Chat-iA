@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Wland Chat iA package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Wland Chat iA 1.0.0\n"
+"Project-Id-Version: Wland Chat iA 1.0.2\n"
 "Report-Msgid-Bugs-To: https://weblandia.es\n"
-"POT-Creation-Date: 2025-01-01 00:00:00+00:00\n"
-"PO-Revision-Date: 2025-01-15 12:00+0100\n"
+"POT-Creation-Date: 2025-10-14 00:00:00+00:00\n"
+"PO-Revision-Date: 2025-10-14 15:30+0100\n"
 "Last-Translator: Carlos Vera <carlos@braveslab.com>\n"
 "Language-Team: Spanish <es@weblandia.es>\n"
 "Language: es_ES\n"
@@ -184,3 +184,88 @@ msgstr "Escribe tu mensaje"
 
 msgid "Enviar mensaje"
 msgstr "Enviar mensaje"
+
+#: assets/js/wland_chat_block_modal.js, assets/js/wland_chat_block_screen.js
+msgid "Error al procesar tu mensaje:"
+msgstr "Error al procesar tu mensaje:"
+
+msgid "**No se pudo conectar con el servidor**"
+msgstr "**No se pudo conectar con el servidor**"
+
+msgid "Posibles causas:"
+msgstr "Posibles causas:"
+
+msgid "• Sin conexión a internet"
+msgstr "• Sin conexión a internet"
+
+msgid "• El servidor N8N está caído"
+msgstr "• El servidor N8N está caído"
+
+msgid "• Problema de CORS"
+msgstr "• Problema de CORS"
+
+msgid "• URL del webhook incorrecta"
+msgstr "• URL del webhook incorrecta"
+
+msgid "**Webhook no configurado**"
+msgstr "**Webhook no configurado**"
+
+msgid "El administrador debe configurar la URL del webhook en:"
+msgstr "El administrador debe configurar la URL del webhook en:"
+
+msgid "WordPress Admin > Ajustes > Wland Chat iA"
+msgstr "WordPress Admin > Ajustes > Wland Chat iA"
+
+msgid "**Error de autenticación**"
+msgstr "**Error de autenticación**"
+
+msgid "El token de autenticación es inválido o ha expirado."
+msgstr "El token de autenticación es inválido o ha expirado."
+
+msgid "Contacta al administrador para verificar el token N8N."
+msgstr "Contacta al administrador para verificar el token N8N."
+
+msgid "**Webhook no encontrado**"
+msgstr "**Webhook no encontrado**"
+
+msgid "La URL del webhook no existe o es incorrecta."
+msgstr "La URL del webhook no existe o es incorrecta."
+
+msgid "Verifica la URL en los ajustes del plugin."
+msgstr "Verifica la URL en los ajustes del plugin."
+
+msgid "**Respuesta inválida del servidor**"
+msgstr "**Respuesta inválida del servidor**"
+
+msgid "El servidor N8N no devolvió un JSON válido."
+msgstr "El servidor N8N no devolvió un JSON válido."
+
+msgid "Verifica la configuración del workflow en N8N."
+msgstr "Verifica la configuración del workflow en N8N."
+
+msgid "**Formato de respuesta incorrecto**"
+msgstr "**Formato de respuesta incorrecto**"
+
+msgid "El servidor devolvió una respuesta pero sin el campo esperado."
+msgstr "El servidor devolvió una respuesta pero sin el campo esperado."
+
+msgid "El webhook debe devolver: {output: \"mensaje\"} o {response: \"mensaje\"}"
+msgstr "El webhook debe devolver: {output: \"mensaje\"} o {response: \"mensaje\"}"
+
+msgid "**Error del servidor**"
+msgstr "**Error del servidor**"
+
+msgid "El servidor N8N tiene un problema interno."
+msgstr "El servidor N8N tiene un problema interno."
+
+msgid "Contacta al administrador del servidor."
+msgstr "Contacta al administrador del servidor."
+
+msgid "**Error desconocido**"
+msgstr "**Error desconocido**"
+
+msgid "Ocurrió un error inesperado. Por favor, intenta de nuevo."
+msgstr "Ocurrió un error inesperado. Por favor, intenta de nuevo."
+
+msgid "**Detalles técnicos:**"
+msgstr "**Detalles técnicos:**"

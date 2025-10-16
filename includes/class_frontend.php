@@ -54,7 +54,33 @@ class Frontend {
         }
         
         // Si pasa las verificaciones, encolar los assets
-        
+
+        // Sistema de fingerprinting y cookies (cargar primero, sin dependencias)
+        wp_enqueue_script(
+            'wland-chat-fingerprint',
+            WLAND_CHAT_PLUGIN_URL . 'assets/js/wland_fingerprint.js',
+            array(),
+            WLAND_CHAT_VERSION,
+            false // Cargar en head para que esté disponible inmediatamente
+        );
+
+        // Pasar configuración GDPR al script de fingerprinting
+        wp_localize_script('wland-chat-fingerprint', 'wlandGDPRConfig', array(
+            'enabled' => (bool) get_option('wland_chat_gdpr_enabled', false),
+            'message' => get_option('wland_chat_gdpr_message', __('Este sitio utiliza cookies para mejorar tu experiencia y proporcionar un servicio de chat personalizado. Al continuar navegando, aceptas nuestra política de cookies.', 'wland-chat')),
+            'accept_text' => get_option('wland_chat_gdpr_accept_text', __('Aceptar', 'wland-chat')),
+            'cookie_name' => 'wland_chat_session',
+            'cookie_duration' => YEAR_IN_SECONDS
+        ));
+
+        // CSS del banner GDPR
+        wp_enqueue_style(
+            'wland-chat-gdpr-banner',
+            WLAND_CHAT_PLUGIN_URL . 'assets/css/wland_gdpr_banner.css',
+            array(),
+            WLAND_CHAT_VERSION
+        );
+
         // Lottie Player
         wp_enqueue_script(
             'lottie-player',
@@ -85,7 +111,7 @@ class Frontend {
         
         // TAREA 2B: Localizar script con configuración completa incluyendo token de autenticación
         $chat_config = Helpers::get_chat_config();
-        
+
         wp_localize_script('wland-chat-frontend', 'WlandChatConfig', array(
             'ajaxUrl'       => admin_url('admin-ajax.php'),
             'nonce'         => wp_create_nonce('wland_chat_nonce'),
@@ -94,6 +120,13 @@ class Frontend {
             'animationPath' => WLAND_CHAT_PLUGIN_URL . 'assets/media/chat.json',
             'isAvailable'   => $chat_config['is_available'],
         ));
+
+        // Configurar traducciones para JavaScript
+        wp_set_script_translations(
+            'wland-chat-frontend',
+            'wland-chat',
+            WLAND_CHAT_PLUGIN_DIR . 'languages'
+        );
     }
     
     /**

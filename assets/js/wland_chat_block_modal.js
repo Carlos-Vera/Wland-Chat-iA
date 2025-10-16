@@ -3,7 +3,11 @@
  * Version: 1.0.0
  * MODIFICADO: Implementada autenticación N8N con header X-N8N-Auth
  * REFACTORIZADO: snake_case y JSDoc
+ * REFACTORIZADO: Añadido soporte i18n con wp.i18n
  */
+
+// Importar funciones de traducción de WordPress
+const { __, _x, _n, sprintf } = wp.i18n;
 
 class WlandChatModal {
     /**
@@ -14,12 +18,17 @@ class WlandChatModal {
         this.is_open = false;
         this.lottie_animation = null;
         this.conversation_history = [];
-        this.session_id = this.generate_session_id();
+        this.session_id = null; // Se inicializará de forma asíncrona
 
         // Obtener configuración desde PHP
         this.animation_path = window.wlandChatData?.animationPath || window.WlandChatConfig?.animationPath || '';
         this.webhook_url = window.wlandChatConfig?.webhookUrl || window.WlandChatConfig?.webhook_url || '';
         this.auth_token = window.WlandChatConfig?.auth_token || ''; // Token de autenticación
+
+        // Inicializar session_id de forma asíncrona
+        this.generate_session_id().then(session_id => {
+            this.session_id = session_id;
+        });
 
         this.init();
     }
@@ -129,11 +138,32 @@ class WlandChatModal {
     }
 
     /**
-     * Genera un ID único para la sesión del chat
-     * @returns {string} ID de sesión único
+     * Genera un ID único para la sesión del chat usando fingerprinting
+     * Intenta obtener el session_id del sistema de cookies con fingerprinting.
+     * Si no está disponible, genera uno temporal.
+     * @returns {Promise<string>} ID de sesión único
      */
-    generate_session_id() {
-        return 'session_' + Date.now() + '_' + Math.random().toString(36).substring(2, 11);
+    async generate_session_id() {
+        // Intentar obtener session_id del sistema de fingerprinting
+        if (window.wlandFingerprint) {
+            // Esperar a que el fingerprinting se complete si está en proceso
+            if (typeof window.wlandFingerprint.get_or_create_session === 'function') {
+                try {
+                    const fingerprint_session = await window.wlandFingerprint.get_or_create_session();
+                    if (fingerprint_session) {
+                        console.log('[Wland Chat Modal] Usando session_id con fingerprinting:', fingerprint_session);
+                        return fingerprint_session;
+                    }
+                } catch (error) {
+                    console.error('[Wland Chat Modal] Error obteniendo fingerprint:', error);
+                }
+            }
+        }
+
+        // Fallback: generar ID temporal si el sistema de fingerprinting no está disponible
+        const temp_session = 'temp_' + Date.now() + '_' + Math.random().toString(36).substring(2, 11);
+        console.warn('[Wland Chat Modal] Sistema de fingerprinting no disponible, usando session_id temporal:', temp_session);
+        return temp_session;
     }
 
     /**
@@ -377,56 +407,56 @@ class WlandChatModal {
             this.hide_typing_indicator();
 
             // Construir mensaje de error descriptivo
-            let user_message = '❌ Error al procesar tu mensaje:\n\n';
+            let user_message = __('Error al procesar tu mensaje:', 'wland-chat') + '\n\n';
             let technical_details = '';
 
             if (error.message.includes('Failed to fetch')) {
-                user_message += '🔌 **No se pudo conectar con el servidor**\n\n';
-                user_message += 'Posibles causas:\n';
-                user_message += '• Sin conexión a internet\n';
-                user_message += '• El servidor N8N está caído\n';
-                user_message += '• Problema de CORS\n';
-                user_message += '• URL del webhook incorrecta\n\n';
+                user_message += __('**No se pudo conectar con el servidor**', 'wland-chat') + '\n\n';
+                user_message += __('Posibles causas:', 'wland-chat') + '\n';
+                user_message += __('• Sin conexión a internet', 'wland-chat') + '\n';
+                user_message += __('• El servidor N8N está caído', 'wland-chat') + '\n';
+                user_message += __('• Problema de CORS', 'wland-chat') + '\n';
+                user_message += __('• URL del webhook incorrecta', 'wland-chat') + '\n\n';
                 technical_details = `URL: ${this.webhook_url}\nError: ${error.message}`;
             } else if (error.message.includes('WEBHOOK_NOT_CONFIGURED')) {
-                user_message += '⚙️ **Webhook no configurado**\n\n';
-                user_message += 'El administrador debe configurar la URL del webhook en:\n';
-                user_message += 'WordPress Admin > Ajustes > Wland Chat iA\n\n';
+                user_message += __('**Webhook no configurado**', 'wland-chat') + '\n\n';
+                user_message += __('El administrador debe configurar la URL del webhook en:', 'wland-chat') + '\n';
+                user_message += __('WordPress Admin > Ajustes > Wland Chat iA', 'wland-chat') + '\n\n';
                 technical_details = error.message;
             } else if (error.message.includes('401') || error.message.includes('403')) {
-                user_message += '🔐 **Error de autenticación**\n\n';
-                user_message += 'El token de autenticación es inválido o ha expirado.\n';
-                user_message += 'Contacta al administrador para verificar el token N8N.\n\n';
+                user_message += __('**Error de autenticación**', 'wland-chat') + '\n\n';
+                user_message += __('El token de autenticación es inválido o ha expirado.', 'wland-chat') + '\n';
+                user_message += __('Contacta al administrador para verificar el token N8N.', 'wland-chat') + '\n\n';
                 technical_details = error.message;
             } else if (error.message.includes('404')) {
-                user_message += '🔍 **Webhook no encontrado**\n\n';
-                user_message += 'La URL del webhook no existe o es incorrecta.\n';
-                user_message += 'Verifica la URL en los ajustes del plugin.\n\n';
+                user_message += __('**Webhook no encontrado**', 'wland-chat') + '\n\n';
+                user_message += __('La URL del webhook no existe o es incorrecta.', 'wland-chat') + '\n';
+                user_message += __('Verifica la URL en los ajustes del plugin.', 'wland-chat') + '\n\n';
                 technical_details = `URL: ${this.webhook_url}\n${error.message}`;
             } else if (error.message.includes('JSON_PARSE_ERROR')) {
-                user_message += '📦 **Respuesta inválida del servidor**\n\n';
-                user_message += 'El servidor N8N no devolvió un JSON válido.\n';
-                user_message += 'Verifica la configuración del workflow en N8N.\n\n';
+                user_message += __('**Respuesta inválida del servidor**', 'wland-chat') + '\n\n';
+                user_message += __('El servidor N8N no devolvió un JSON válido.', 'wland-chat') + '\n';
+                user_message += __('Verifica la configuración del workflow en N8N.', 'wland-chat') + '\n\n';
                 technical_details = error.message;
             } else if (error.message.includes('RESPONSE_FORMAT_ERROR')) {
-                user_message += '📋 **Formato de respuesta incorrecto**\n\n';
-                user_message += 'El servidor devolvió una respuesta pero sin el campo esperado.\n';
-                user_message += 'El webhook debe devolver: {output: "mensaje"} o {response: "mensaje"}\n\n';
+                user_message += __('**Formato de respuesta incorrecto**', 'wland-chat') + '\n\n';
+                user_message += __('El servidor devolvió una respuesta pero sin el campo esperado.', 'wland-chat') + '\n';
+                user_message += __('El webhook debe devolver: {output: "mensaje"} o {response: "mensaje"}', 'wland-chat') + '\n\n';
                 technical_details = error.message;
             } else if (error.message.includes('500') || error.message.includes('502') || error.message.includes('503')) {
-                user_message += '🔧 **Error del servidor**\n\n';
-                user_message += 'El servidor N8N tiene un problema interno.\n';
-                user_message += 'Contacta al administrador del servidor.\n\n';
+                user_message += __('**Error del servidor**', 'wland-chat') + '\n\n';
+                user_message += __('El servidor N8N tiene un problema interno.', 'wland-chat') + '\n';
+                user_message += __('Contacta al administrador del servidor.', 'wland-chat') + '\n\n';
                 technical_details = error.message;
             } else {
-                user_message += '⚠️ **Error desconocido**\n\n';
-                user_message += 'Ocurrió un error inesperado. Por favor, intenta de nuevo.\n\n';
+                user_message += __('**Error desconocido**', 'wland-chat') + '\n\n';
+                user_message += __('Ocurrió un error inesperado. Por favor, intenta de nuevo.', 'wland-chat') + '\n\n';
                 technical_details = `${error.message}\n\nStack: ${error.stack}`;
             }
 
-            user_message += '📋 **Detalles técnicos:**\n';
+            user_message += __('**Detalles técnicos:**', 'wland-chat') + '\n';
             user_message += '```\n' + technical_details + '\n```\n\n';
-            user_message += `🕐 ${new Date().toLocaleString('es-ES')}`;
+            user_message += `${new Date().toLocaleString('es-ES')}`;
 
             this.add_message(user_message, 'bot');
 

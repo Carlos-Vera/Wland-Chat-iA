@@ -275,6 +275,59 @@ class Settings {
             'wland_chat_settings',
             'wland_chat_availability_section'
         );
+
+        // ==================== SECCIÓN GDPR/COOKIES ====================
+        add_settings_section(
+            'wland_chat_gdpr_section',
+            __('Compliance GDPR / Cookies', 'wland-chat'),
+            array($this, 'gdpr_section_callback'),
+            'wland_chat_settings'
+        );
+
+        // GDPR Enabled
+        register_setting('wland_chat_settings', $this->option_prefix . 'gdpr_enabled', array(
+            'type' => 'boolean',
+            'sanitize_callback' => array($this, 'sanitize_checkbox'),
+            'default' => false
+        ));
+
+        add_settings_field(
+            'gdpr_enabled',
+            __('Habilitar Banner GDPR', 'wland-chat'),
+            array($this, 'gdpr_enabled_callback'),
+            'wland_chat_settings',
+            'wland_chat_gdpr_section'
+        );
+
+        // GDPR Message
+        register_setting('wland_chat_settings', $this->option_prefix . 'gdpr_message', array(
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_textarea_field',
+            'default' => __('Este sitio utiliza cookies para mejorar tu experiencia y proporcionar un servicio de chat personalizado. Al continuar navegando, aceptas nuestra política de cookies.', 'wland-chat')
+        ));
+
+        add_settings_field(
+            'gdpr_message',
+            __('Mensaje del Banner', 'wland-chat'),
+            array($this, 'gdpr_message_callback'),
+            'wland_chat_settings',
+            'wland_chat_gdpr_section'
+        );
+
+        // GDPR Accept Text
+        register_setting('wland_chat_settings', $this->option_prefix . 'gdpr_accept_text', array(
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default' => __('Aceptar', 'wland-chat')
+        ));
+
+        add_settings_field(
+            'gdpr_accept_text',
+            __('Texto del Botón de Aceptar', 'wland-chat'),
+            array($this, 'gdpr_accept_text_callback'),
+            'wland_chat_settings',
+            'wland_chat_gdpr_section'
+        );
     }
     
     // ==================== CALLBACKS DE SECCIONES ====================
@@ -289,6 +342,10 @@ class Settings {
     
     public function availability_section_callback() {
         echo '<p>' . __('Configure los horarios de disponibilidad del chat.', 'wland-chat') . '</p>';
+    }
+
+    public function gdpr_section_callback() {
+        echo '<p>' . __('Configure el banner de consentimiento de cookies para cumplir con las regulaciones GDPR. El sistema utiliza cookies persistentes con fingerprinting del navegador para identificar usuarios únicamente.', 'wland-chat') . '</p>';
     }
     
     // ==================== CALLBACKS DE CAMPOS ====================
@@ -472,7 +529,38 @@ class Settings {
             esc_textarea($value)
         );
     }
-    
+
+    public function gdpr_enabled_callback() {
+        $value = get_option($this->option_prefix . 'gdpr_enabled', false);
+        printf(
+            '<label><input type="checkbox" name="%s" value="1" %s /> %s</label><p class="description">%s</p>',
+            esc_attr($this->option_prefix . 'gdpr_enabled'),
+            checked(1, $value, false),
+            __('Mostrar banner de consentimiento de cookies', 'wland-chat'),
+            __('Cuando está habilitado, se mostrará un banner solicitando consentimiento antes de crear cookies. El consentimiento se guarda en localStorage.', 'wland-chat')
+        );
+    }
+
+    public function gdpr_message_callback() {
+        $value = get_option($this->option_prefix . 'gdpr_message');
+        printf(
+            '<textarea name="%s" rows="4" class="large-text">%s</textarea><p class="description">%s</p>',
+            esc_attr($this->option_prefix . 'gdpr_message'),
+            esc_textarea($value),
+            __('Mensaje que se mostrará en el banner de cookies. Explica el uso de cookies para la sesión del chat.', 'wland-chat')
+        );
+    }
+
+    public function gdpr_accept_text_callback() {
+        $value = get_option($this->option_prefix . 'gdpr_accept_text');
+        printf(
+            '<input type="text" name="%s" value="%s" class="regular-text" /><p class="description">%s</p>',
+            esc_attr($this->option_prefix . 'gdpr_accept_text'),
+            esc_attr($value),
+            __('Texto del botón para aceptar las cookies (ej: "Aceptar", "Entendido", "Acepto").', 'wland-chat')
+        );
+    }
+
     // ==================== FUNCIONES DE SANITIZACIÓN ====================
     
     public function sanitize_position($value) {
