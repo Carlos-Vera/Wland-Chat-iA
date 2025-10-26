@@ -6,8 +6,13 @@
  * REFACTORIZADO: Añadido soporte i18n con wp.i18n
  */
 
-// Importar funciones de traducción de WordPress
-const { __, _x, _n, sprintf } = wp.i18n;
+// Importar funciones de traducción de WordPress con fallback
+const { __, _x, _n, sprintf } = window.wp && window.wp.i18n ? window.wp.i18n : {
+    __: (text) => text,
+    _x: (text) => text,
+    _n: (single, plural, number) => number === 1 ? single : plural,
+    sprintf: (format, ...args) => format
+};
 
 class WlandChatScreen {
     /**
@@ -16,14 +21,14 @@ class WlandChatScreen {
      */
     constructor() {
         this.is_open = false;
-        this.lottie_animation = null;
+        
         this.conversation_history = [];
         this.session_id = null; // Se inicializará de forma asíncrona
 
-        // Obtener configuración desde PHP
-        this.animation_path = window.wlandChatData?.animationPath || window.WlandChatConfig?.animationPath || '';
-        this.webhook_url = window.wlandChatConfig?.webhookUrl || window.WlandChatConfig?.webhook_url || '';
+        // Obtener configuración desde PHP (WlandChatConfig es pasado desde class_frontend.php)
+        this.webhook_url = window.WlandChatConfig?.webhook_url || '';
         this.auth_token = window.WlandChatConfig?.auth_token || ''; // Token de autenticación
+        this.is_available = window.WlandChatConfig?.isAvailable !== undefined ? window.WlandChatConfig.isAvailable : true;
 
         // Inicializar session_id de forma asíncrona
         this.generate_session_id().then(session_id => {
@@ -39,9 +44,11 @@ class WlandChatScreen {
      * @returns {void}
      */
     init() {
-        console.log('🚀 Inicializando Wland Chat Fullscreen...');
-        console.log('📡 Webhook URL:', this.webhook_url);
-        console.log('🔐 Auth Token:', this.auth_token ? '✓ Configurado' : '✗ No configurado');
+        console.log('Inicializando Wland Chat Fullscreen...');
+        console.log('WlandChatConfig completo:', window.WlandChatConfig);
+        console.log('Webhook URL:', this.webhook_url);
+        console.log('Auth Token:', this.auth_token ? 'Configurado' : 'No configurado');
+        console.log('Auth Token value:', this.auth_token);
 
         // Elementos del DOM
         this.chat_container = document.getElementById('braveslab-chat-container');
@@ -52,14 +59,12 @@ class WlandChatScreen {
         this.chat_input = document.getElementById('chat-input');
         this.send_button = document.getElementById('send-button');
         this.typing_indicator = document.getElementById('typing-indicator');
+        this.chat_icon = document.getElementById('chat-icon');
 
         if (!this.chat_container) {
-            console.error('❌ No se encontró el contenedor del chat');
+            console.error('No se encontró el contenedor del chat');
             return;
         }
-
-        // Inicializar Lottie animation
-        this.init_lottie_animation();
 
         // Mostrar hora del mensaje de bienvenida
         this.display_welcome_time();
@@ -67,7 +72,7 @@ class WlandChatScreen {
         // Event Listeners
         this.setup_event_listeners();
 
-        console.log('✅ Chat Fullscreen inicializado correctamente');
+        console.log('Chat Fullscreen inicializado correctamente');
     }
 
     /**
@@ -101,32 +106,6 @@ class WlandChatScreen {
         });
     }
 
-    /**
-     * Inicializa la animación Lottie en el botón del chat
-     * @returns {void}
-     */
-    init_lottie_animation() {
-        const lottie_container = document.getElementById('chat-lottie');
-
-        if (!lottie_container || !this.animation_path) {
-            console.warn('⚠️ No se pudo cargar la animación Lottie');
-            return;
-        }
-
-        try {
-            this.lottie_animation = lottie.loadAnimation({
-                container: lottie_container,
-                renderer: 'svg',
-                loop: true,
-                autoplay: true,
-                path: this.animation_path
-            });
-
-            console.log('✅ Animación Lottie cargada');
-        } catch (error) {
-            console.error('❌ Error al cargar animación Lottie:', error);
-        }
-    }
 
     /**
      * Genera un ID único para la sesión del chat usando fingerprinting
@@ -202,8 +181,8 @@ class WlandChatScreen {
             close_icon.style.display = 'block';
         }
 
-        if (this.lottie_animation) {
-            this.lottie_animation.pause();
+        if (this.chat_icon) {
+            this.chat_icon.style.display = 'none';
         }
 
         // Focus en el input
@@ -230,8 +209,8 @@ class WlandChatScreen {
             close_icon.style.display = 'none';
         }
 
-        if (this.lottie_animation) {
-            this.lottie_animation.goToAndPlay(0);
+        if (this.chat_icon) {
+            this.chat_icon.style.display = 'block';
         }
     }
 
@@ -254,11 +233,11 @@ class WlandChatScreen {
         const message = this.chat_input.value.trim();
 
         if (!message) {
-            console.warn('⚠️ Mensaje vacío, no se envía');
+            console.warn('Mensaje vacío, no se envía');
             return;
         }
 
-        console.log('📤 Enviando mensaje:', message);
+        console.log('Enviando mensaje:', message);
 
         // Agregar mensaje del usuario al chat
         this.add_message(message, 'user');
@@ -288,9 +267,9 @@ class WlandChatScreen {
             // Solo añadir header de autenticación si existe el token
             if (this.auth_token && this.auth_token.trim() !== '') {
                 headers['X-N8N-Auth'] = this.auth_token;
-                console.log('🔐 Header de autenticación añadido');
+                console.log('Header de autenticación añadido');
             } else {
-                console.log('⚠️ No se añadió header de autenticación (token vacío)');
+                console.log('No se añadió header de autenticación (token vacío)');
             }
 
             // Preparar payload para N8N Chat (espera chatInput)
@@ -299,9 +278,9 @@ class WlandChatScreen {
                 sessionId: this.session_id
             };
 
-            console.log('📤 Payload enviado:', payload);
+            console.log('Payload enviado:', payload);
             console.log('🌐 Enviando petición a:', this.webhook_url);
-            console.log('📋 Headers:', headers);
+            console.log('Headers:', headers);
 
             // Enviar al webhook con autenticación
             const response = await fetch(this.webhook_url, {
@@ -311,7 +290,7 @@ class WlandChatScreen {
                 mode: 'cors'
             });
 
-            console.log('📥 Respuesta recibida:');
+            console.log('Respuesta recibida:');
             console.log('   - Status:', response.status);
             console.log('   - Status Text:', response.statusText);
             console.log('   - Headers:', Object.fromEntries(response.headers.entries()));
@@ -322,7 +301,7 @@ class WlandChatScreen {
                 response_text = await response.text();
                 console.log('   - Body (raw):', response_text);
             } catch (text_error) {
-                console.error('❌ Error al leer el cuerpo de la respuesta:', text_error);
+                console.error('Error al leer el cuerpo de la respuesta:', text_error);
             }
 
             if (!response.ok) {
@@ -353,9 +332,9 @@ class WlandChatScreen {
             let data;
             try {
                 data = JSON.parse(response_text);
-                console.log('✅ JSON parseado correctamente:', data);
+                console.log('JSON parseado correctamente:', data);
             } catch (json_error) {
-                console.error('❌ Error al parsear JSON:', json_error);
+                console.error('Error al parsear JSON:', json_error);
                 console.error('   Respuesta recibida:', response_text);
                 throw new Error(`JSON_PARSE_ERROR: La respuesta del servidor no es JSON válido.\n\nRespuesta: ${response_text.substring(0, 200)}`);
             }
@@ -384,7 +363,7 @@ class WlandChatScreen {
             }
 
             if (!bot_message) {
-                console.error('❌ No se encontró mensaje en la respuesta');
+                console.error('No se encontró mensaje en la respuesta');
                 console.error('   Estructura recibida:', data);
                 console.error('   Tipo de dato:', typeof data);
                 throw new Error(`RESPONSE_FORMAT_ERROR: No se encontró el mensaje en la respuesta.\n\nCampos disponibles: ${Object.keys(data).join(', ')}\n\nRespuesta completa: ${JSON.stringify(data).substring(0, 200)}`);
@@ -398,10 +377,10 @@ class WlandChatScreen {
                 content: bot_message
             });
 
-            console.log('✅ Mensaje procesado correctamente');
+            console.log('Mensaje procesado correctamente');
 
         } catch (error) {
-            console.error('❌ ERROR COMPLETO:', error);
+            console.error('ERROR COMPLETO:', error);
             console.error('   Stack:', error.stack);
             this.hide_typing_indicator();
 

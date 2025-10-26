@@ -1,0 +1,356 @@
+/**
+ * Settings Page Styles
+ * Estilos específicos para la página de ajustes con diseño Bentō
+ *
+ * @package WlandChat
+ * @version 1.2.1
+ */
+
+/* ==================== SETTINGS SIDEBAR ==================== */
+.wland-settings-sidebar .wland-admin-nav__sublist {
+    margin-top: var(--wland-space-xs);
+    margin-left: var(--wland-space-xl);
+    padding-left: var(--wland-space-md);
+    border-left: 2px solid var(--wland-gray-200);
+}
+
+.wland-settings-sidebar .wland-admin-nav__subitem {
+    list-style: none;
+    margin: 0;
+}
+
+.wland-settings-sidebar .wland-admin-nav__sublink {
+    display: block;
+    padding: var(--wland-space-xs) var(--wland-space-md);
+    color: var(--wland-gray-600);
+    text-decoration: none;
+    font-size: var(--wland-text-sm);
+    border-radius: var(--wland-radius-sm);
+    transition: all var(--wland-transition-fast);
+}
+
+.wland-settings-sidebar .wland-admin-nav__sublink:hover {
+    color: var(--wland-primary);
+    background: var(--wland-gray-50);
+}
+
+/* ==================== SETTINGS CONTENT ==================== */
+.wland-settings-content {
+    padding-bottom: var(--wland-space-2xl);
+}
+
+/* ==================== SETTINGS SECTIONS ==================== */
+.wland-settings-section {
+    animation: fade-in 0.3s ease-out;
+}
+
+.wland-settings-section:not(:first-child) {
+    margin-top: var(--wland-space-2xl);
+}
+
+/* ==================== SETTINGS FORM ==================== */
+.wland-settings-form {
+    margin: var(--wland-space-xl) 0;
+}
+
+/* ==================== FIELD GROUPS ==================== */
+.wland-settings-field {
+    background: var(--wland-white);
+    border: 1px solid var(--wland-gray-200);
+    border-radius: var(--wland-radius-lg);
+    padding: var(--wland-space-lg);
+    transition: all var(--wland-transition-fast);
+}
+
+.wland-settings-field:hover {
+    border-color: var(--wland-gray-300);
+    box-shadow: var(--wland-shadow);
+}
+
+.wland-settings-field--full {
+    grid-column: 1 / -1;
+}
+
+.wland-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wland-space-sm);
+}
+
+.wland-field-label {
+    font-size: var(--wland-text-base);
+    font-weight: var(--wland-font-semibold);
+    color: var(--wland-gray-900);
+    margin: 0;
+}
+
+.wland-field-description {
+    font-size: var(--wland-text-sm);
+    color: var(--wland-gray-600);
+    line-height: var(--wland-leading-relaxed);
+    margin: 0;
+}
+
+/* ==================== INPUT FIELDS ==================== */
+.wland-field-input,
+.wland-field-textarea,
+.wland-field-select {
+    border: 1px solid var(--wland-gray-300);
+    border-radius: var(--wland-radius-md);
+    padding: var(--wland-space-sm) var(--wland-space-md);
+    font-size: var(--wland-text-base);
+    font-family: var(--wland-font-sans);
+    color: var(--wland-gray-900);
+    background: var(--wland-white);
+    transition: all var(--wland-transition-fast);
+    width: 100%;
+}
+
+.wland-field-input:focus,
+.wland-field-textarea:focus,
+.wland-field-select:focus {
+    border-color: var(--wland-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--wland-primary-lighter);
+}
+
+.wland-field-textarea {
+    resize: vertical;
+    min-height: 100px;
+    font-family: var(--wland-font-sans);
+}
+
+.wland-field-select--multiple {
+    min-height: 200px;
+    padding: var(--wland-space-xs);
+}
+
+.wland-field-select--multiple option {
+    padding: var(--wland-space-sm) var(--wland-space-md);
+    border-radius: var(--wland-radius-sm);
+    margin-bottom: 2px;
+}
+
+/* ==================== FIELD HIGHLIGHT ==================== */
+.wland-field-highlight {
+    animation: field-highlight 2s ease-out;
+}
+
+@keyframes field-highlight {
+    0% {
+        box-shadow: 0 0 0 4px var(--wland-primary-lighter);
+        border-color: var(--wland-primary);
+    }
+    100% {
+        box-shadow: none;
+        border-color: var(--wland-gray-200);
+    }
+}
+
+/* ==================== SETTINGS ACTIONS ==================== */
+.wland-settings-actions {
+    margin-top: var(--wland-space-2xl);
+    padding: var(--wland-space-xl);
+    background: var(--wland-gray-50);
+    border-radius: var(--wland-radius-lg);
+    border: 1px solid var(--wland-gray-200);
+    position: sticky;
+    bottom: var(--wland-space-md);
+    z-index: 10;
+    box-shadow: var(--wland-shadow-lg);
+}
+
+/* ==================== FORM SECTIONS ==================== */
+.wland-settings-form h2 {
+    font-size: var(--wland-text-xl);
+    font-weight: var(--wland-font-semibold);
+    color: var(--wland-gray-900);
+    margin: var(--wland-space-2xl) 0 var(--wland-space-lg) 0;
+    padding-bottom: var(--wland-space-md);
+    border-bottom: 1px solid var(--wland-gray-200);
+}
+
+.wland-settings-form h2:first-child {
+    margin-top: 0;
+}
+
+/* Section descriptions */
+.wland-settings-form h2 + p {
+    margin-top: calc(var(--wland-space-lg) * -1);
+    margin-bottom: var(--wland-space-lg);
+    color: var(--wland-gray-600);
+    font-size: var(--wland-text-sm);
+}
+
+/* ==================== FORM TABLE OVERRIDE ==================== */
+.wland-settings-form .form-table {
+    margin: 0;
+    border: none;
+    background: transparent;
+}
+
+.wland-settings-form .form-table th {
+    padding: var(--wland-space-lg) var(--wland-space-md) var(--wland-space-lg) 0;
+    font-weight: var(--wland-font-semibold);
+    color: var(--wland-gray-900);
+    font-size: var(--wland-text-base);
+    width: 250px;
+    vertical-align: top;
+}
+
+.wland-settings-form .form-table td {
+    padding: var(--wland-space-lg) 0;
+}
+
+.wland-settings-form .form-table tr {
+    border-bottom: 1px solid var(--wland-gray-100);
+}
+
+.wland-settings-form .form-table tr:last-child {
+    border-bottom: none;
+}
+
+/* ==================== INPUT FIELDS ==================== */
+.wland-settings-form input[type="text"],
+.wland-settings-form input[type="url"],
+.wland-settings-form input[type="email"],
+.wland-settings-form input[type="password"],
+.wland-settings-form input[type="time"],
+.wland-settings-form textarea,
+.wland-settings-form select {
+    border: 1px solid var(--wland-gray-300);
+    border-radius: var(--wland-radius-md);
+    padding: var(--wland-space-sm) var(--wland-space-md);
+    font-size: var(--wland-text-base);
+    font-family: var(--wland-font-sans);
+    color: var(--wland-gray-900);
+    background: var(--wland-white);
+    box-shadow: var(--wland-shadow-sm);
+    transition: all var(--wland-transition-fast);
+    max-width: 500px;
+    width: 100%;
+}
+
+.wland-settings-form input[type="text"]:focus,
+.wland-settings-form input[type="url"]:focus,
+.wland-settings-form input[type="email"]:focus,
+.wland-settings-form input[type="password"]:focus,
+.wland-settings-form input[type="time"]:focus,
+.wland-settings-form textarea:focus,
+.wland-settings-form select:focus {
+    border-color: var(--wland-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--wland-primary-lighter);
+}
+
+/* Password fields */
+.wland-settings-form input[type="password"] {
+    font-family: var(--wland-font-mono);
+    letter-spacing: 2px;
+}
+
+/* Select múltiple */
+.wland-settings-form select[multiple] {
+    padding: var(--wland-space-sm);
+    min-height: 200px;
+}
+
+.wland-settings-form select[multiple] option {
+    padding: var(--wland-space-sm) var(--wland-space-md);
+    border-radius: var(--wland-radius-sm);
+    margin-bottom: 2px;
+}
+
+/* ==================== CHECKBOXES ==================== */
+.wland-settings-form input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: var(--wland-space-sm);
+    cursor: pointer;
+    accent-color: var(--wland-primary);
+    vertical-align: middle;
+}
+
+.wland-settings-form input[type="checkbox"] + label {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--wland-space-sm);
+}
+
+/* ==================== DESCRIPTIONS ==================== */
+.wland-settings-form .description {
+    color: var(--wland-gray-600);
+    font-size: var(--wland-text-sm);
+    line-height: var(--wland-leading-relaxed);
+    margin-top: var(--wland-space-sm);
+    display: block;
+}
+
+.wland-settings-form .description strong {
+    color: var(--wland-gray-900);
+    font-weight: var(--wland-font-semibold);
+}
+
+/* ==================== SUBMIT BUTTON ==================== */
+.wland-settings-form .wland-section--actions {
+    margin-top: var(--wland-space-2xl);
+    padding: var(--wland-space-xl);
+    background: var(--wland-gray-50);
+    border-radius: var(--wland-radius-lg);
+    border: 1px solid var(--wland-gray-200);
+}
+
+.wland-settings-form #submit {
+    background: var(--wland-primary);
+    border-color: var(--wland-primary);
+    color: var(--wland-white);
+    font-size: var(--wland-text-base);
+    font-weight: var(--wland-font-semibold);
+    padding: var(--wland-space-md) var(--wland-space-xl);
+    border-radius: var(--wland-radius-md);
+    cursor: pointer;
+    transition: all var(--wland-transition-fast);
+    box-shadow: var(--wland-shadow);
+}
+
+.wland-settings-form #submit:hover {
+    background: var(--wland-primary-hover);
+    border-color: var(--wland-primary-hover);
+    box-shadow: var(--wland-shadow-md);
+    transform: translateY(-1px);
+}
+
+.wland-settings-form #submit:active {
+    transform: translateY(0);
+    box-shadow: var(--wland-shadow-sm);
+}
+
+.wland-settings-form #submit:focus {
+    outline: 2px solid var(--wland-primary);
+    outline-offset: 2px;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media screen and (max-width: 782px) {
+    .wland-settings-form .form-table th,
+    .wland-settings-form .form-table td {
+        display: block;
+        width: 100%;
+        padding: var(--wland-space-sm) 0;
+    }
+
+    .wland-settings-form .form-table th {
+        padding-bottom: var(--wland-space-xs);
+    }
+
+    .wland-settings-form input[type="text"],
+    .wland-settings-form input[type="url"],
+    .wland-settings-form input[type="email"],
+    .wland-settings-form input[type="password"],
+    .wland-settings-form input[type="time"],
+    .wland-settings-form textarea,
+    .wland-settings-form select {
+        max-width: 100%;
+    }
+}

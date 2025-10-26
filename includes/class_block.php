@@ -1,4 +1,14 @@
 <?php
+/**
+ * Gestión del bloque de Gutenberg
+ *
+ * Maneja el registro y renderizado del bloque de chat para Gutenberg
+ *
+ * @package WlandChat
+ * @since 1.0.0
+ * @version 1.0.0
+ */
+
 namespace WlandChat;
 
 if (!defined('ABSPATH')) {
@@ -6,26 +16,52 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Gestión del bloque de Gutenberg
+ * Clase Block
+ *
+ * Gestiona el bloque de Gutenberg del chat
+ *
+ * @since 1.0.0
  */
 class Block {
-    
+
+    /**
+     * Instancia única (patrón Singleton)
+     *
+     * @since 1.0.0
+     * @var Block|null
+     */
     private static $instance = null;
-    
+
+    /**
+     * Obtener instancia única
+     *
+     * @since 1.0.0
+     * @return Block Instancia única de la clase
+     */
     public static function get_instance() {
         if (null === self::$instance) {
             self::$instance = new self();
         }
         return self::$instance;
     }
-    
+
+    /**
+     * Constructor privado (patrón Singleton)
+     *
+     * @since 1.0.0
+     */
     private function __construct() {
         add_action('init', array($this, 'register_block'));
         add_action('enqueue_block_editor_assets', array($this, 'enqueue_block_editor_assets'));
     }
-    
+
     /**
-     * Registrar bloque
+     * Registrar bloque de Gutenberg
+     *
+     * Registra el bloque 'wland/chat-widget' con sus atributos y callback
+     *
+     * @since 1.0.0
+     * @return void
      */
     public function register_block() {
         // Asegurar que tenemos los archivos necesarios
@@ -66,7 +102,12 @@ class Block {
     }
     
     /**
-     * Encolar assets del editor
+     * Encolar assets del editor de bloques
+     *
+     * Carga scripts y estilos necesarios para el editor de Gutenberg
+     *
+     * @since 1.0.0
+     * @return void
      */
     public function enqueue_block_editor_assets() {
         wp_enqueue_script(
@@ -102,7 +143,13 @@ class Block {
     }
     
     /**
-     * Renderizar bloque
+     * Renderizar bloque en el frontend
+     *
+     * Callback para renderizar el HTML del bloque en la página
+     *
+     * @since 1.0.0
+     * @param array $attributes Atributos del bloque
+     * @return string HTML del bloque
      */
     public function render_block($attributes) {
         // Verificar si debe mostrarse el chat
@@ -139,6 +186,11 @@ class Block {
     
     /**
      * Asegurar que existen los archivos del bloque
+     *
+     * Crea archivos JS y CSS del bloque si no existen
+     *
+     * @since 1.0.0
+     * @return void
      */
     private function ensure_block_files() {
         $js_dir = WLAND_CHAT_PLUGIN_DIR . 'assets/js/';

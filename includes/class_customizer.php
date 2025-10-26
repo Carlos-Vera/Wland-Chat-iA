@@ -1,4 +1,14 @@
 <?php
+/**
+ * Integración con WordPress Customizer
+ *
+ * Registra opciones del chat en el Customizer de WordPress
+ *
+ * @package WlandChat
+ * @since 1.0.0
+ * @version 1.0.0
+ */
+
 namespace WlandChat;
 
 if (!defined('ABSPATH')) {
@@ -6,25 +16,52 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Integración con WordPress Customizer
+ * Clase Customizer
+ *
+ * Integra el plugin con el Customizer de WordPress
+ *
+ * @since 1.0.0
  */
 class Customizer {
-    
+
+    /**
+     * Instancia única (patrón Singleton)
+     *
+     * @since 1.0.0
+     * @var Customizer|null
+     */
     private static $instance = null;
-    
+
+    /**
+     * Obtener instancia única
+     *
+     * @since 1.0.0
+     * @return Customizer Instancia única de la clase
+     */
     public static function get_instance() {
         if (null === self::$instance) {
             self::$instance = new self();
         }
         return self::$instance;
     }
-    
+
+    /**
+     * Constructor privado (patrón Singleton)
+     *
+     * @since 1.0.0
+     */
     private function __construct() {
         add_action('customize_register', array($this, 'register_customizer_settings'));
     }
-    
+
     /**
      * Registrar configuraciones en el Customizer
+     *
+     * Añade panel, secciones y controles del chat al Customizer
+     *
+     * @since 1.0.0
+     * @param WP_Customize_Manager $wp_customize Objeto del Customizer
+     * @return void
      */
     public function register_customizer_settings($wp_customize) {
         // Agregar panel
@@ -214,7 +251,12 @@ class Customizer {
     }
     
     /**
-     * Script para vista previa en vivo
+     * Script para vista previa en vivo en el Customizer
+     *
+     * Actualiza elementos del chat en tiempo real mientras se edita
+     *
+     * @since 1.0.0
+     * @return void
      */
     public function customizer_preview_script() {
         ?>
@@ -243,30 +285,46 @@ class Customizer {
     }
     
     /**
-     * Sanitizar posición
+     * Sanitizar campo de posición
+     *
+     * @since 1.0.0
+     * @param string $value Valor a sanitizar
+     * @return string Valor sanitizado
      */
     public function sanitize_position($value) {
         $allowed = array('bottom-right', 'bottom-left', 'center');
         return in_array($value, $allowed) ? $value : 'bottom-right';
     }
-    
+
     /**
      * Sanitizar modo de visualización
+     *
+     * @since 1.0.0
+     * @param string $value Valor a sanitizar
+     * @return string Valor sanitizado
      */
     public function sanitize_display_mode($value) {
         $allowed = array('modal', 'fullscreen');
         return in_array($value, $allowed) ? $value : 'modal';
     }
-    
+
     /**
      * Sanitizar checkbox
+     *
+     * @since 1.0.0
+     * @param mixed $value Valor a sanitizar
+     * @return int 1 si está marcado, 0 en caso contrario
      */
     public function sanitize_checkbox($value) {
         return $value == 1 ? 1 : 0;
     }
-    
+
     /**
-     * Sanitizar hora
+     * Sanitizar hora en formato HH:MM
+     *
+     * @since 1.0.0
+     * @param string $value Hora a sanitizar
+     * @return string Hora sanitizada
      */
     public function sanitize_time($value) {
         if (preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/', $value)) {

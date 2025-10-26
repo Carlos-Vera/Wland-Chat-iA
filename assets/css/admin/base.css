@@ -1,0 +1,234 @@
+/**
+ * Estilos Base del Admin
+ * Layout principal y estructura
+ *
+ * @package WlandChat
+ * @version 1.2.0
+ */
+
+/* ==================== RESET Y BASE ==================== */
+.wland-admin-wrap * {
+    box-sizing: border-box;
+}
+
+.wland-admin-wrap {
+    margin: 20px 20px 0 0;
+    font-family: var(--wland-font-sans);
+    color: var(--wland-gray-900);
+    line-height: var(--wland-leading-normal);
+}
+
+/* ==================== CONTAINER PRINCIPAL ==================== */
+.wland-admin-container {
+    max-width: var(--wland-container-max-width);
+    margin: 0 auto;
+    padding: 0;
+}
+
+/* ==================== HEADER ==================== */
+.wland-admin-header {
+    background: var(--wland-white);
+    border: 1px solid var(--wland-gray-200);
+    border-radius: var(--wland-radius-lg);
+    padding: var(--wland-space-lg) var(--wland-space-xl);
+    margin-bottom: var(--wland-space-xl);
+    box-shadow: var(--wland-shadow-sm);
+}
+
+.wland-admin-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.wland-admin-header__logo {
+    display: flex;
+    align-items: center;
+}
+
+.wland-admin-header__logo svg {
+    height: 52px;
+    width: auto;
+}
+
+.wland-admin-header__logo-text {
+    font-size: var(--wland-text-2xl);
+    font-weight: var(--wland-font-bold);
+    color: var(--wland-primary);
+}
+
+.wland-admin-header__version {
+    display: flex;
+    align-items: center;
+}
+
+/* ==================== BODY LAYOUT ==================== */
+.wland-admin-body {
+    display: flex;
+    gap: var(--wland-space-xl);
+    align-items: flex-start;
+}
+
+/* ==================== SIDEBAR ==================== */
+.wland-admin-sidebar {
+    flex-shrink: 0;
+    width: var(--wland-sidebar-width);
+    background: var(--wland-white);
+    border: 1px solid var(--wland-gray-200);
+    border-radius: var(--wland-radius-lg);
+    padding: var(--wland-space-md);
+    box-shadow: var(--wland-shadow-sm);
+    position: sticky;
+    top: 32px; /* WordPress admin bar height */
+}
+
+.wland-admin-sidebar__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wland-space-xs);
+}
+
+.wland-admin-sidebar__item {
+    display: flex;
+    align-items: center;
+    gap: var(--wland-space-md);
+    padding: var(--wland-space-md);
+    color: var(--wland-gray-700);
+    text-decoration: none;
+    border-radius: var(--wland-radius-md);
+    font-size: var(--wland-text-base);
+    font-weight: var(--wland-font-medium);
+    transition: all var(--wland-transition-fast);
+}
+
+.wland-admin-sidebar__item:hover {
+    background: var(--wland-gray-50);
+    color: var(--wland-primary);
+}
+
+.wland-admin-sidebar__item--active {
+    background: var(--wland-primary-lighter);
+    color: var(--wland-primary);
+}
+
+.wland-admin-sidebar__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.wland-admin-sidebar__icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.wland-admin-sidebar__label {
+    flex: 1;
+}
+
+/* ==================== CONTENT AREA ==================== */
+.wland-admin-content {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ==================== PAGE HEADER ==================== */
+.wland-page-header {
+    margin-bottom: var(--wland-space-2xl);
+}
+
+.wland-page-title {
+    font-size: var(--wland-text-3xl);
+    font-weight: var(--wland-font-bold);
+    color: var(--wland-gray-900);
+    margin: 0 0 var(--wland-space-sm) 0;
+    line-height: var(--wland-leading-tight);
+}
+
+.wland-page-description {
+    font-size: var(--wland-text-base);
+    color: var(--wland-gray-600);
+    margin: 0;
+    line-height: var(--wland-leading-relaxed);
+}
+
+/* ==================== SECCIONES ==================== */
+.wland-section {
+    margin-bottom: var(--wland-space-2xl);
+}
+
+.wland-section__title {
+    font-size: var(--wland-text-xl);
+    font-weight: var(--wland-font-semibold);
+    color: var(--wland-gray-900);
+    margin: 0 0 var(--wland-space-lg) 0;
+}
+
+.wland-section__description {
+    font-size: var(--wland-text-sm);
+    color: var(--wland-gray-600);
+    margin: 0 0 var(--wland-space-md) 0;
+}
+
+.wland-section--actions {
+    padding: var(--wland-space-xl);
+    background: var(--wland-gray-50);
+    border-radius: var(--wland-radius-lg);
+}
+
+.wland-section--warning {
+    margin-bottom: var(--wland-space-xl);
+}
+
+.wland-section--info {
+    margin-top: var(--wland-space-2xl);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media screen and (max-width: 1024px) {
+    .wland-admin-body {
+        flex-direction: column;
+    }
+
+    .wland-admin-sidebar {
+        width: 100%;
+        position: static;
+    }
+
+    .wland-admin-sidebar__inner {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .wland-admin-sidebar__item {
+        flex: 1;
+        min-width: 150px;
+        justify-content: center;
+    }
+}
+
+@media screen and (max-width: 782px) {
+    .wland-admin-wrap {
+        margin: 10px 10px 0 0;
+    }
+
+    .wland-admin-header {
+        padding: var(--wland-space-md) var(--wland-space-lg);
+    }
+
+    .wland-admin-header__logo svg {
+        height: 42px;
+    }
+
+    .wland-page-title {
+        font-size: var(--wland-text-2xl);
+    }
+
+    .wland-sidebar__item {
+        font-size: var(--wland-text-sm);
+        padding: var(--wland-space-sm) var(--wland-space-md);
+    }
+}

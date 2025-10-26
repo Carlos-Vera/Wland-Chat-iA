@@ -1,0 +1,848 @@
+/**
+ * Componentes del Admin
+ * Cards, Buttons, Toggles, Notices - Estilo Bentō
+ *
+ * @package WlandChat
+ * @version 1.2.0
+ */
+
+/* ==================== CARD GRID (BENTO LAYOUT) ==================== */
+.wland-card-grid {
+    display: grid;
+    gap: var(--wland-card-gap);
+    margin-bottom: var(--wland-space-xl);
+}
+
+.wland-card-grid--2-cols {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.wland-card-grid--3-cols {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.wland-card-grid--4-cols {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* ==================== CARDS ==================== */
+.wland-card {
+    background: var(--wland-white);
+    border: 1px solid var(--wland-gray-200);
+    border-radius: var(--wland-radius-lg);
+    padding: var(--wland-space-xl);
+    box-shadow: var(--wland-shadow-sm);
+    transition: all var(--wland-transition-base);
+    display: flex;
+    flex-direction: column;
+    gap: var(--wland-space-md);
+}
+
+.wland-card:hover {
+    box-shadow: var(--wland-shadow-md);
+    transform: translateY(-2px);
+}
+
+.wland-card__icon {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.wland-card__icon svg {
+    width: 30px;
+    height: 30px;
+}
+
+.wland-card__title {
+    font-size: var(--wland-text-lg);
+    font-weight: var(--wland-font-semibold);
+    color: var(--wland-gray-900);
+    margin: 0;
+    line-height: var(--wland-leading-tight);
+}
+
+.wland-card__subtitle {
+    font-size: var(--wland-text-sm);
+    color: var(--wland-gray-600);
+    margin: 0;
+}
+
+.wland-card__description {
+    font-size: var(--wland-text-base);
+    color: var(--wland-gray-700);
+    margin: 0;
+    line-height: var(--wland-leading-relaxed);
+    flex: 1;
+}
+
+.wland-card__action {
+    margin-top: auto;
+    padding-top: var(--wland-space-sm);
+}
+
+.wland-card__footer {
+    padding-top: var(--wland-space-md);
+    font-size: var(--wland-text-sm);
+    color: var(--wland-gray-600);
+}
+
+.wland-card--compact {
+    padding: var(--wland-space-lg);
+}
+
+/* ==================== BUTTONS ==================== */
+.wland-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--wland-space-sm);
+    padding: 12px 32px;
+    font-size: var(--wland-text-base);
+    font-weight: 600;
+    font-family: var(--wland-font-sans);
+    line-height: 1.5;
+    border-radius: 50px; /* Bordes completamente redondeados estilo Bentō */
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    white-space: nowrap;
+}
+
+.wland-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(56, 88, 233, 0.15);
+}
+
+/* Button Primary */
+.wland-button--primary {
+    background: var(--wland-primary);
+    color: var(--wland-white);
+    box-shadow: 0 2px 4px rgba(56, 88, 233, 0.2);
+}
+
+.wland-button--primary:hover {
+    background: var(--wland-primary-hover);
+    color: var(--wland-white);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(56, 88, 233, 0.3);
+}
+
+.wland-button--primary:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(56, 88, 233, 0.2);
+}
+
+/* Button Secondary */
+.wland-button--secondary {
+    background: var(--wland-white);
+    color: var(--wland-gray-700);
+    border: 1px solid var(--wland-gray-300);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.wland-button--secondary:hover {
+    background: var(--wland-gray-50);
+    border-color: var(--wland-gray-400);
+    color: var(--wland-gray-900);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.wland-button--secondary:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Button Link */
+.wland-button--link {
+    background: transparent;
+    color: var(--wland-primary);
+    border: none;
+    padding: var(--wland-space-sm) var(--wland-space-md);
+    box-shadow: none;
+}
+
+.wland-button--link:hover {
+    color: var(--wland-primary-hover);
+    text-decoration: underline;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Button Outline */
+.wland-button--outline {
+    background: transparent;
+    color: var(--wland-primary);
+    border: 2px solid var(--wland-primary);
+    box-shadow: none;
+}
+
+.wland-button--outline:hover {
+    background: var(--wland-primary);
+    color: var(--wland-white);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(56, 88, 233, 0.2);
+}
+
+.wland-button--outline:active {
+    transform: translateY(0);
+}
+
+.wland-button__icon {
+    display: flex;
+    align-items: center;
+}
+
+.wland-button__text {
+    display: inline-block;
+}
+
+/* Button Group */
+.wland-button-group {
+    display: flex;
+    gap: var(--wland-space-md);
+    flex-wrap: wrap;
+}
+
+/* WordPress Submit Button Override - Estilo Bentō */
+.wland-button-group .button-primary,
+.wland-button-group input[type="submit"].button-primary {
+    padding: 12px 32px !important;
+    font-size: var(--wland-text-base) !important;
+    font-weight: 600 !important;
+    line-height: 1.5 !important;
+    border-radius: 50px !important;
+    border: none !important;
+    background: var(--wland-primary) !important;
+    color: var(--wland-white) !important;
+    box-shadow: 0 2px 4px rgba(56, 88, 233, 0.2) !important;
+    text-shadow: none !important;
+    height: auto !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    cursor: pointer !important;
+}
+
+.wland-button-group .button-primary:hover,
+.wland-button-group input[type="submit"].button-primary:hover {
+    background: var(--wland-primary-hover) !important;
+    color: var(--wland-white) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(56, 88, 233, 0.3) !important;
+}
+
+.wland-button-group .button-primary:active,
+.wland-button-group input[type="submit"].button-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(56, 88, 233, 0.2) !important;
+}
+
+.wland-button-group .button-primary:focus,
+.wland-button-group input[type="submit"].button-primary:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(56, 88, 233, 0.15) !important;
+}
+
+/* ==================== BADGES ==================== */
+.wland-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--wland-space-xs) var(--wland-space-md);
+    font-size: var(--wland-text-sm);
+    font-weight: var(--wland-font-medium);
+    border-radius: var(--wland-radius-full);
+    line-height: 1;
+}
+
+.wland-badge--primary {
+    background: var(--wland-primary-lighter);
+    color: var(--wland-primary);
+}
+
+.wland-badge--success {
+    background: var(--wland-success-light);
+    color: var(--wland-success);
+}
+
+.wland-badge--warning {
+    background: var(--wland-warning-light);
+    color: var(--wland-warning);
+}
+
+.wland-badge--error {
+    background: var(--wland-error-light);
+    color: var(--wland-error);
+}
+
+/* Badge clickeable */
+.wland-badge--clickable {
+    text-decoration: none;
+    cursor: pointer;
+    transition: all var(--wland-transition-fast);
+}
+
+.wland-badge--clickable:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--wland-shadow-sm);
+}
+
+.wland-badge--clickable.wland-badge--primary:hover {
+    background: var(--wland-primary-light);
+    color: var(--wland-white);
+}
+
+/* ==================== TOGGLES / SWITCHES ==================== */
+.wland-toggle {
+    margin-bottom: var(--wland-space-md);
+}
+
+.wland-toggle__control {
+    display: flex;
+    align-items: center;
+}
+
+.wland-toggle__input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.wland-toggle__label {
+    display: flex;
+    align-items: center;
+    gap: var(--wland-space-md);
+    cursor: pointer;
+    user-select: none;
+}
+
+.wland-toggle__switch {
+    position: relative;
+    width: 48px;
+    height: 24px;
+    background: var(--wland-gray-300);
+    border-radius: var(--wland-radius-full);
+    transition: background var(--wland-transition-fast);
+    flex-shrink: 0;
+}
+
+.wland-toggle__switch::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: var(--wland-white);
+    border-radius: 50%;
+    transition: transform var(--wland-transition-fast);
+    box-shadow: var(--wland-shadow-sm);
+}
+
+.wland-toggle__input:checked + .wland-toggle__label .wland-toggle__switch {
+    background: var(--wland-primary);
+}
+
+.wland-toggle__input:checked + .wland-toggle__label .wland-toggle__switch::before {
+    transform: translateX(24px);
+}
+
+.wland-toggle__input:focus + .wland-toggle__label .wland-toggle__switch {
+    outline: 2px solid var(--wland-primary);
+    outline-offset: 2px;
+}
+
+.wland-toggle__text {
+    font-size: var(--wland-text-base);
+    font-weight: var(--wland-font-medium);
+    color: var(--wland-gray-900);
+}
+
+.wland-toggle__description {
+    margin: var(--wland-space-sm) 0 0 62px;
+    font-size: var(--wland-text-sm);
+    color: var(--wland-gray-600);
+}
+
+/* ==================== TOGGLE WRAPPER (SIMPLIFIED) ==================== */
+/* Versión simplificada para uso en formularios */
+.wland-toggle-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.wland-toggle-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.wland-toggle-slider {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 24px;
+    background-color: var(--wland-gray-300);
+    border-radius: var(--wland-radius-full);
+    transition: background-color var(--wland-transition-fast);
+    cursor: pointer;
+}
+
+.wland-toggle-slider::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background-color: var(--wland-white);
+    border-radius: 50%;
+    transition: transform var(--wland-transition-fast);
+    box-shadow: var(--wland-shadow-sm);
+}
+
+.wland-toggle-input:checked + .wland-toggle-slider {
+    background-color: var(--wland-primary);
+}
+
+.wland-toggle-input:checked + .wland-toggle-slider::before {
+    transform: translateX(24px);
+}
+
+.wland-toggle-input:focus + .wland-toggle-slider {
+    outline: 2px solid var(--wland-primary);
+    outline-offset: 2px;
+}
+
+.wland-toggle-input:disabled + .wland-toggle-slider {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ==================== NOTICES / ALERTS - Estilo Bentō ==================== */
+.wland-notice {
+    padding: var(--wland-space-lg);
+    border-radius: var(--wland-radius-lg);
+    margin-bottom: var(--wland-space-lg);
+    margin-top: var(--wland-space-lg);
+    border: none;
+    box-shadow: var(--wland-shadow-md);
+    animation: wland-notice-fade-in 0.3s ease-out;
+}
+
+@keyframes wland-notice-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes wland-notice-slide-out {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 200px;
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+}
+
+.wland-notice--hiding {
+    animation: wland-notice-slide-out 0.5s ease-out forwards;
+    overflow: hidden;
+}
+
+.wland-notice__content {
+    font-size: var(--wland-text-base);
+    line-height: var(--wland-leading-relaxed);
+    color: var(--wland-white);
+    font-weight: 500;
+}
+
+.wland-notice--info {
+    background: var(--wland-info);
+}
+
+.wland-notice--success {
+    background: var(--wland-success);
+}
+
+.wland-notice--warning {
+    background: var(--wland-warning);
+}
+
+.wland-notice--error {
+    background: var(--wland-error);
+}
+
+/* ==================== ABOUT PAGE ==================== */
+/* Team section */
+.wland-about-team {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--wland-space-xl);
+    margin-top: var(--wland-space-lg);
+}
+
+.wland-about-team__member {
+    padding: var(--wland-space-xl);
+    background: var(--wland-white);
+    border: 1px solid var(--wland-gray-200);
+    border-radius: var(--wland-radius-lg);
+    box-shadow: var(--wland-shadow-sm);
+    transition: all var(--wland-transition-fast);
+    cursor: pointer;
+}
+
+.wland-about-team__member:hover {
+    box-shadow: var(--wland-shadow-md);
+    transform: translateY(-2px);
+}
+
+/* Clickeable cards */
+a:has(.wland-card),
+a:has(.wland-about-team__member) {
+    cursor: pointer;
+    outline: none !important;
+}
+
+a:has(.wland-card):focus,
+a:has(.wland-about-team__member):focus,
+a:has(.wland-card):focus-visible,
+a:has(.wland-about-team__member):focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+a:has(.wland-card) .wland-card:hover,
+a:has(.wland-about-team__member) .wland-about-team__member:hover {
+    cursor: pointer;
+}
+
+.wland-about-team__name {
+    font-size: var(--wland-text-lg);
+    font-weight: var(--wland-font-semibold);
+    color: var(--wland-gray-900);
+    margin: 0 0 var(--wland-space-xs) 0;
+}
+
+.wland-about-team__role {
+    font-size: var(--wland-text-sm);
+    color: var(--wland-gray-600);
+    margin: 0 0 var(--wland-space-sm) 0;
+}
+
+.wland-about-team__email {
+    font-size: var(--wland-text-sm);
+    color: var(--wland-primary);
+    margin: 0;
+    font-family: var(--wland-font-mono);
+}
+
+/* Changelog section */
+.wland-changelog {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wland-space-2xl);
+}
+
+.wland-changelog__version {
+    padding: var(--wland-space-xl);
+    background: var(--wland-white);
+    border: 1px solid var(--wland-gray-200);
+    border-radius: var(--wland-radius-lg);
+    box-shadow: var(--wland-shadow-sm);
+}
+
+.wland-changelog__title {
+    display: flex;
+    align-items: center;
+    gap: var(--wland-space-md);
+    font-size: var(--wland-text-xl);
+    font-weight: var(--wland-font-semibold);
+    color: var(--wland-gray-900);
+    margin: 0 0 var(--wland-space-xs) 0;
+}
+
+.wland-changelog__date {
+    font-size: var(--wland-text-sm);
+    color: var(--wland-gray-600);
+    margin: 0 0 var(--wland-space-lg) 0;
+}
+
+.wland-changelog__section {
+    margin-top: var(--wland-space-lg);
+}
+
+.wland-changelog__section h4 {
+    font-size: var(--wland-text-base);
+    font-weight: var(--wland-font-semibold);
+    color: var(--wland-gray-900);
+    margin: 0 0 var(--wland-space-sm) 0;
+}
+
+.wland-changelog__section ul {
+    margin: 0;
+    padding-left: var(--wland-space-xl);
+}
+
+.wland-changelog__section li {
+    margin-bottom: var(--wland-space-xs);
+    color: var(--wland-gray-700);
+    line-height: var(--wland-leading-relaxed);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media screen and (max-width: 1024px) {
+    .wland-card-grid--3-cols,
+    .wland-card-grid--4-cols {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .wland-card-grid--2-cols,
+    .wland-card-grid--3-cols,
+    .wland-card-grid--4-cols {
+        grid-template-columns: 1fr;
+    }
+
+    .wland-card {
+        padding: var(--wland-space-lg);
+    }
+
+    .wland-button-group {
+        flex-direction: column;
+    }
+
+    .wland-button {
+        justify-content: center;
+    }
+
+    .wland-about-team {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==================== ICON TABS (SELECTOR) ==================== */
+.wland-icon-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 4px;
+    background: #f9fafb;
+    border-radius: 12px;
+}
+
+.wland-icon-tab {
+    flex: 1;
+    cursor: pointer;
+    position: relative;
+}
+
+.wland-icon-tab input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.wland-icon-tab__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 12px;
+    background: transparent;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.wland-icon-tab:hover .wland-icon-tab__content {
+    background: #ffffff;
+}
+
+.wland-icon-tab input[type="radio"]:checked + .wland-icon-tab__content {
+    background: #ffffff;
+    border-color: #5B4CCC;
+    box-shadow: 0 2px 8px rgba(91, 76, 204, 0.15);
+}
+
+.wland-icon-tab__content img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.wland-icon-tab__content span {
+    font-size: 11px;
+    font-weight: 500;
+    color: #6b7280;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.wland-icon-tab input[type="radio"]:checked + .wland-icon-tab__content span {
+    color: #5B4CCC;
+}
+
+@media (max-width: 782px) {
+    .wland-icon-tabs {
+        flex-wrap: wrap;
+    }
+    .wland-icon-tab {
+        flex: 0 0 calc(50% - 4px);
+    }
+}
+
+/* ==================== COLOR PICKER WRAPPER ==================== */
+.wland-color-picker-wrapper {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.wland-color-picker {
+    width: 40px !important;
+    height: 40px !important;
+    border: none !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    overflow: hidden !important;
+}
+
+.wland-color-picker::-webkit-color-swatch-wrapper {
+    padding: 0 !important;
+}
+
+.wland-color-picker::-webkit-color-swatch {
+    border: none !important;
+    border-radius: 6px !important;
+}
+
+.wland-color-picker::-moz-color-swatch {
+    border: none !important;
+    border-radius: 6px !important;
+}
+
+.wland-color-picker:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+}
+
+.wland-color-picker:active {
+    transform: scale(0.98);
+}
+
+.wland-color-picker-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: #6B7280;
+    text-align: center;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+/* ==================== PALETTE TOGGLE BUTTON ==================== */
+.wland-palette-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    color: #4B5563;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.wland-palette-toggle:hover {
+    background: #F3F4F6;
+    border-color: #D1D5DB;
+    color: #1F2937;
+}
+
+.wland-palette-toggle-icon {
+    display: inline-block;
+    transition: transform 0.2s ease;
+    font-size: 10px;
+    line-height: 1;
+}
+
+.wland-palette-toggle.wland-palette-toggle--expanded .wland-palette-toggle-icon {
+    transform: rotate(90deg);
+}
+
+/* ==================== COLOR PALETTE PRESETS ==================== */
+.wland-color-palette {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
+    margin: 0;
+}
+
+.wland-color-palette--collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+}
+
+.wland-color-palette--expanded {
+    max-height: 300px;
+    opacity: 1;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #E5E7EB;
+}
+
+.wland-color-preset {
+    position: relative;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    width: 32px;
+    height: 32px;
+    border: 2px solid #E5E7EB;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.wland-color-preset:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    border-color: #9CA3AF;
+}
+
+.wland-color-preset:active {
+    transform: scale(0.95);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) inset;
+}
+
+.wland-color-preset:focus {
+    outline: 2px solid #5B4CCC;
+    outline-offset: 2px;
+}

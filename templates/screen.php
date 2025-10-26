@@ -8,12 +8,16 @@
 if (!defined('ABSPATH')) {
     exit;
 }
+
+// Obtener el icono seleccionado
+$chat_icon = get_option('wland_chat_chat_icon', 'robot-chat');
+$icon_path = WLAND_CHAT_PLUGIN_URL . 'assets/media/chat-icons/' . $chat_icon . '.svg';
 ?>
 
 <div id="<?php echo esc_attr($unique_id); ?>" class="braveslab-chat-widget-container position-<?php echo esc_attr($position); ?>">
     <div id="braveslab-chat-container" class="chat-closed">
         <button id="chat-toggle" title="<?php esc_attr_e('Habla con nuestro asistente IA', 'wland-chat'); ?>">
-            <div id="chat-lottie"></div>
+            <img id="chat-icon" src="<?php echo esc_url($icon_path); ?>" alt="<?php esc_attr_e('Chat', 'wland-chat'); ?>">
             <span id="close-icon" style="display: none;">✕</span>
         </button>
         
@@ -57,12 +61,3 @@ if (!defined('ABSPATH')) {
         </div>
     </div>
 </div>
-
-<script type="text/javascript">
-/* Pasar datos PHP a JavaScript */
-var wlandChatConfig = {
-    webhookUrl: <?php echo json_encode($webhook_url); ?>,
-    animationPath: <?php echo json_encode(WLAND_CHAT_PLUGIN_URL . 'assets/media/chat.json'); ?>,
-    uniqueId: <?php echo json_encode($unique_id); ?>
-};
-</script>
