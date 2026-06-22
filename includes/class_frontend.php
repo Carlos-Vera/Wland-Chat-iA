@@ -311,12 +311,10 @@ class Frontend {
         $attributes = Helpers::sanitize_block_attributes($attributes);
         $unique_id = Helpers::generate_unique_id();
         
-        extract($attributes);
-        
-        $webhook_url = $webhookUrl;
-        $header_title = $headerTitle;
-        $header_subtitle = $headerSubtitle;
-        $welcome_message = $welcomeMessage;
+        $webhook_url = $attributes['webhookUrl'];
+        $header_title = $attributes['headerTitle'];
+        $header_subtitle = $attributes['headerSubtitle'];
+        $welcome_message = $attributes['welcomeMessage'];
         $position = $attributes['position'];
         $display_mode = $attributes['displayMode'];
         $chat_skin = isset($attributes['chatSkin']) ? $attributes['chatSkin'] : 'default';

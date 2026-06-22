@@ -17,6 +17,7 @@
     var TextareaControl = components.TextareaControl;
 
     blocks.registerBlockType('braves/chat-widget', {
+        apiVersion: 3,
         title: __('BravesChat — Full Screen', 'braveschat'),
         description: __('Displays the BravesChat widget in full screen on this page. Configure the webhook, colors and title from the plugin panel.', 'braveschat'),
         icon: 'format-chat',

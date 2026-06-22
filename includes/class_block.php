@@ -52,72 +52,48 @@ class Block {
      */
     private function __construct() {
         add_action('init', array($this, 'register_block'));
-        add_action('enqueue_block_editor_assets', array($this, 'enqueue_block_editor_assets'));
     }
 
     /**
      * Registrar bloque de Gutenberg
      *
-     * Registra el bloque 'wland/chat-widget' con sus atributos y callback
+     * Registra los assets del bloque y el bloque 'braves/chat-widget'
+     * a partir de block.json (apiVersion 3)
      *
      * @since 1.0.0
      * @return void
      */
     public function register_block() {
-        // Asegurar que tenemos los archivos necesarios
-        $this->ensure_block_files();
-        
-        register_block_type('braves/chat-widget', array(
-            'editor_script' => 'braves-chat-block-editor',
-            'editor_style' => 'braves-chat-block-editor-style',
-            'style' => 'braves-chat-block-style',
-            'render_callback' => array($this, 'render_block'),
-            'attributes' => array(
-                // Solo el mensaje de bienvenida es configurable por bloque.
-                // El resto de opciones (webhook, título, colores, posición)
-                // se gestionan desde el panel global del plugin.
-                'welcomeMessage' => array(
-                    'type' => 'string',
-                    'default' => '',
-                ),
-            ),
-        ));
-    }
-    
-    /**
-     * Encolar assets del editor de bloques
-     *
-     * Carga scripts y estilos necesarios para el editor de Gutenberg
-     *
-     * @since 1.0.0
-     * @return void
-     */
-    public function enqueue_block_editor_assets() {
-        wp_enqueue_script(
+        // Registrar assets antes del bloque: block.json los referencia por handle
+        wp_register_script(
             'braves-chat-block-editor',
             BRAVES_CHAT_PLUGIN_URL . 'assets/js/block.js',
-            array('wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-i18n'),
+            array('wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n'),
             BRAVES_CHAT_VERSION,
             true
         );
-        
-        wp_enqueue_style(
+
+        // Localizar datos para el bloque
+        wp_localize_script('braves-chat-block-editor', 'bravesChatBlock', array(
+            'defaultWelcomeMessage' => Helpers::get_welcome_message(),
+        ));
+
+        wp_register_style(
             'braves-chat-block-editor-style',
             BRAVES_CHAT_PLUGIN_URL . 'assets/css/block_editor.css',
             array(),
             BRAVES_CHAT_VERSION
         );
 
-        wp_enqueue_style(
+        wp_register_style(
             'braves-chat-block-style',
             BRAVES_CHAT_PLUGIN_URL . 'assets/css/block_style.css',
             array(),
             BRAVES_CHAT_VERSION
         );
-        
-        // Localizar datos para el bloque
-        wp_localize_script('braves-chat-block-editor', 'bravesChatBlock', array(
-            'defaultWelcomeMessage' => Helpers::get_welcome_message(),
+
+        register_block_type(BRAVES_CHAT_PLUGIN_DIR . 'block.json', array(
+            'render_callback' => array($this, 'render_block'),
         ));
     }
     
@@ -170,88 +146,5 @@ class Block {
         ob_start();
         include BRAVES_CHAT_PLUGIN_DIR . 'templates/screen.php';
         return ob_get_clean();
-    }
-    
-    /**
-     * Asegurar que existen los archivos del bloque
-     *
-     * Crea archivos JS y CSS del bloque si no existen
-     *
-     * @since 1.0.0
-     * @return void
-     */
-    private function ensure_block_files() {
-        $js_dir = BRAVES_CHAT_PLUGIN_DIR . 'assets/js/';
-        $css_dir = BRAVES_CHAT_PLUGIN_DIR . 'assets/css/';
-        
-        // Crear directorios si no existen
-        if (!file_exists($js_dir)) {
-            wp_mkdir_p($js_dir);
-        }
-        
-        if (!file_exists($css_dir)) {
-            wp_mkdir_p($css_dir);
-        }
-        
-        // Crear block.js si no existe
-        $block_js_file = $js_dir . 'block.js';
-        if (!file_exists($block_js_file)) {
-            $this->create_block_js($block_js_file);
-        }
-        
-        // Crear block_editor.css si no existe
-        $block_editor_css = $css_dir . 'block_editor.css';
-        if (!file_exists($block_editor_css)) {
-            $this->create_block_editor_css($block_editor_css);
-        }
-
-        // Crear block_style.css si no existe
-        $block_style_css = $css_dir . 'block_style.css';
-        if (!file_exists($block_style_css)) {
-            $this->create_block_style_css($block_style_css);
-        }
-    }
-    
-    /**
-     * Crear archivo block.js (fallback si no existe en disco)
-     * Nota: el archivo real es assets/js/block.js y tiene precedencia.
-     */
-    private function create_block_js($file) {
-        // Copiar contenido del archivo real si existe
-        $real_file = BRAVES_CHAT_PLUGIN_DIR . 'assets/js/block.js';
-        if (file_exists($real_file)) {
-            copy($real_file, $file);
-        }
-    }
-
-    /**
-     * Crear archivo block-editor.css (fallback si no existe en disco)
-     */
-    private function create_block_editor_css($file) {
-        $real_file = BRAVES_CHAT_PLUGIN_DIR . 'assets/css/block_editor.css';
-        if (file_exists($real_file)) {
-            copy($real_file, $file);
-        }
-    }
-    
-    /**
-     * Crear archivo block-style.css
-     */
-    private function create_block_style_css($file) {
-        $content = "/* Estilos del bloque en el frontend */
-.wp-block-braves-chat-widget {
-    position: relative;
-}
-
-.braveslab-chat-widget-container {
-    position: relative;
-    width: 100%;
-    min-height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}";
-        
-        file_put_contents($file, $content);
     }
 }

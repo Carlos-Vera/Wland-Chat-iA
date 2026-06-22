@@ -1,7 +1,7 @@
 # BravesChat
 
-![Versión](https://img.shields.io/badge/version-2.4.6-blue.svg)
-![WordPress](https://img.shields.io/badge/wordpress-5.8%2B-blue.svg)
+![Versión](https://img.shields.io/badge/version-2.5.0-blue.svg)
+![WordPress](https://img.shields.io/badge/wordpress-5.9%2B-blue.svg)
 ![WooCommerce](https://img.shields.io/badge/woocommerce-8.0%2B-96588a.svg)
 ![PHP](https://img.shields.io/badge/php-7.4%2B-blue.svg)
 ![Licencia](https://img.shields.io/badge/license-GPL--2.0--or--later-green.svg)
@@ -10,7 +10,7 @@
 
 BravesChat es un plugin de chat para WordPress con integración directa a **N8N**. Configuras el webhook, eliges el diseño y el chat queda listo para producción — sin tocar código.
 
-**Versión actual**: 2.4.6. 
+**Versión actual**: 2.5.0. 
 [Ver changelog](CHANGELOG.md) · [Repositorio](https://github.com/Carlos-Vera/braveschat)
 
 ---

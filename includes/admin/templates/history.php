@@ -241,7 +241,7 @@ uasort($sessions, function ($a, $b) {
 
                 <!-- Configuration Status Section -->
                 <?php if (!$config_status['is_configured']): ?>
-                <div class="notice notice-warning inline">
+                <div class="notice notice-warning inline braves-notice">
                     <p>
                         <?php esc_html_e('Almost there! Connect the Webhook URL in Settings so your agent can start working.', 'braveschat'); ?>
                     </p>
@@ -249,7 +249,7 @@ uasort($sessions, function ($a, $b) {
                 <?php endif; ?>
 
                 <?php if (empty($stats_webhook_url)): ?>
-                    <div class="notice notice-warning inline">
+                    <div class="notice notice-warning inline braves-notice">
                         <p>
                             <strong><?php esc_html_e('Webhook not configured:', 'braveschat'); ?></strong>
                             <?php
@@ -261,14 +261,14 @@ uasort($sessions, function ($a, $b) {
                         </p>
                     </div>
                 <?php elseif (!empty($fetch_error)): ?>
-                    <div class="notice notice-error inline">
+                    <div class="notice notice-error inline braves-notice">
                         <p>
                             <strong><?php esc_html_e('No conversations found or there is a connection error.', 'braveschat'); ?></strong>
                             <br><?php echo esc_html($fetch_error); ?>
                         </p>
                     </div>
                 <?php elseif (empty($sessions)): ?>
-                    <div class="notice notice-info inline">
+                    <div class="notice notice-info inline braves-notice">
                         <p>
                             <?php esc_html_e('No conversations found or there is a connection error.', 'braveschat'); ?>
                         </p>

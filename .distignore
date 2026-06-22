@@ -26,3 +26,4 @@ phpunit.xml
 .DS_Store
 *.bak
 config/defaults.php
+*.po~

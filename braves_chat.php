@@ -3,12 +3,12 @@
  * Plugin Name: BravesChat
  * Plugin URI: https://github.com/Carlos-Vera/BravesChat
  * Description: A professional tool that connects your website to your N8N agent, allowing you to provide AI-powered support directly on your website.
- * Version: 2.4.6
+ * Version: 2.5.0
  * Author: Carlos Vera
  * Author URI: https://braveslab.com
  * Text Domain: braveschat
  * Domain Path: /languages
- * Requires at least: 5.8
+ * Requires at least: 5.9
  * Requires PHP: 7.4
  * License: GPL-2.0-or-later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -22,7 +22,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Definir constantes del plugin
-define('BRAVES_CHAT_VERSION', '2.4.6');
+define('BRAVES_CHAT_VERSION', '2.5.0');
 define('BRAVES_CHAT_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BRAVES_CHAT_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('BRAVES_CHAT_PLUGIN_FILE', __FILE__);
@@ -87,7 +87,6 @@ class BravesChat {
         require_once BRAVES_CHAT_PLUGIN_DIR . 'includes/admin/class_admin_controller.php';
 
         require_once BRAVES_CHAT_PLUGIN_DIR . 'includes/class_settings.php';
-        require_once BRAVES_CHAT_PLUGIN_DIR . 'includes/class_customizer.php';
         require_once BRAVES_CHAT_PLUGIN_DIR . 'includes/class_block.php';
         require_once BRAVES_CHAT_PLUGIN_DIR . 'includes/class_frontend.php';
         require_once BRAVES_CHAT_PLUGIN_DIR . 'includes/class_ajax_handler.php';
@@ -274,7 +273,6 @@ class BravesChat {
     public function init_components() {
         BravesCookieManager::get_instance();
         Settings::get_instance();
-        Customizer::get_instance();
         Block::get_instance();
         Frontend::get_instance();
         Ajax_Handler::get_instance();

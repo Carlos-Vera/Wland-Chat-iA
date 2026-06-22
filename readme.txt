@@ -1,10 +1,10 @@
 === BravesChat ===
 Contributors: carlosvera
 Tags: chat, ai, n8n, chatbot, webhook
-Requires at least: 5.8
-Tested up to: 6.9
+Requires at least: 5.9
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.4.6
+Stable tag: 2.5.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -90,6 +90,12 @@ Yes. The token travels only on the server — it is never exposed in the page HT
 5. Settings — N8N webhook configuration, authentication method, and chat behavior.
 
 == Changelog ==
+
+= 2.5.0 =
+* IMPROVED: Full compatibility with WordPress 7.0 — the chat block now keeps the editor running smoothly inside its iframe.
+* IMPROVED: The chat block now shows a live preview in the block inserter.
+* FIXED: The conversation history screen no longer appears blank when the webhook is not yet configured; setup hints are now visible.
+* IMPROVED: Now requires WordPress 5.9 or higher.
 
 = 2.4.6 =
 * FIXED: Chat links from AI responses with non-HTTP protocols (e.g. javascript:) are no longer rendered — only https:// and http:// are accepted. Prevents potential XSS from malicious agent responses.
@@ -266,6 +272,9 @@ This plugin sends chat messages to an N8N webhook URL configured by the site adm
 The webhook URL, destination server, and all data processing are fully controlled by the site administrator. No data is sent to any Braves-operated server.
 
 == Upgrade Notice ==
+
+= 2.5.0 =
+WordPress 7.0 compatibility, block inserter preview, and a fix for the history screen. Requires WordPress 5.9+.
 
 = 2.4.6 =
 Security fix: AI response links are now restricted to HTTP/HTTPS. History modal fully translatable. English Bible verses. Recommended update.

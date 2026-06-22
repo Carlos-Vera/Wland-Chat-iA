@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "braves/chat-widget",
+    "title": "BravesChat — Full Screen",
+    "description": "Displays the BravesChat widget in full screen on this page. Configure the webhook, colors and title from the plugin panel.",
+    "category": "widgets",
+    "icon": "format-chat",
+    "keywords": ["chat", "ai", "assistant", "braveslab", "fullscreen"],
+    "textdomain": "braveschat",
+    "attributes": {
+        "welcomeMessage": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "supports": {
+        "html": false,
+        "multiple": false,
+        "reusable": true
+    },
+    "example": {
+        "attributes": {
+            "welcomeMessage": "Hi! I'm your virtual assistant. How can I help you today?"
+        }
+    },
+    "editorScript": "braves-chat-block-editor",
+    "editorStyle": "braves-chat-block-editor-style",
+    "style": "braves-chat-block-style"
+}

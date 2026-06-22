@@ -70,7 +70,7 @@ $sidebar = Admin_Sidebar::get_instance();
                             'icon' => Template_Helpers::get_icon('verified'),
                             'title' => __('Version', 'braveschat'),
                             'description' => 'v' . BRAVES_CHAT_VERSION,
-                            'footer' => __('Last Update: <b>Apr 15, 2026</b>', 'braveschat'),
+                            'footer' => __('Last Update: <b>Jun 13, 2026</b>', 'braveschat'),
                             'action_text' => 'GitHub Repository',
                             'action_url' => 'https://github.com/Carlos-Vera/braveschat',
                             'action_target' => '_blank',
@@ -118,8 +118,40 @@ $sidebar = Admin_Sidebar::get_instance();
                             <span class="braves-timeline__cap-label"><?php esc_html_e('Today', 'braveschat'); ?></span>
                         </div>
 
-                    <!-- Version 2.4.6 -->
+                    <!-- Version 2.5.0 -->
                         <div class="braves-timeline__item">
+                            <div class="braves-timeline__axis">
+                                <div class="braves-timeline__badge">v2.5.0</div>
+                                <div class="braves-timeline__label"><?php esc_html_e('Jun 13, 2026', 'braveschat'); ?></div>
+                            </div>
+                            <div class="braves-timeline__card-side">
+                                <div class="braves-changelog__version">
+                                    <h3 class="braves-changelog__title">
+                                        <?php esc_html_e('Compatibilidad con WordPress 7.0', 'braveschat'); ?>
+                                    </h3>
+                                    <div class="braves-changelog__section">
+                                        <h4><?php esc_html_e('Mejoras', 'braveschat'); ?></h4>
+                                        <ul>
+                                            <li><?php esc_html_e('Tu chat funciona perfecto con la última versión de WordPress — el editor sigue corriendo sin interrupciones al insertar el bloque.', 'braveschat'); ?></li>
+                                            <li><?php esc_html_e('El bloque del chat ahora muestra una vista previa al insertarlo desde el panel de bloques.', 'braveschat'); ?></li>
+                                        </ul>
+                                    </div>
+                                    <div class="braves-changelog__section">
+                                        <h4><?php esc_html_e('Correcciones', 'braveschat'); ?></h4>
+                                        <ul>
+                                            <li><?php esc_html_e('El historial ya no se ve vacío cuando el webhook aún no está configurado — las instrucciones de configuración vuelven a aparecer correctamente.', 'braveschat'); ?></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    <!-- Version 2.4.6 -->
+                        <div class="braves-timeline__item" data-tl-item>
+                            <div class="braves-timeline__axis">
+                                <div class="braves-timeline__badge">v2.4.6</div>
+                                <div class="braves-timeline__label"><?php esc_html_e('Apr 16, 2026', 'braveschat'); ?></div>
+                            </div>
                             <div class="braves-timeline__card-side">
                                 <div class="braves-changelog__version">
                                     <h3 class="braves-changelog__title">
@@ -146,10 +178,6 @@ $sidebar = Admin_Sidebar::get_instance();
                                         </ul>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="braves-timeline__axis">
-                                <div class="braves-timeline__badge">v2.4.6</div>
-                                <div class="braves-timeline__label"><?php esc_html_e('Apr 16, 2026', 'braveschat'); ?></div>
                             </div>
                         </div>
 

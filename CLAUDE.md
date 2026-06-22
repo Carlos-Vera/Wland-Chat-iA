@@ -4,7 +4,7 @@
 
 ## 📋 Información General
 - **Nombre:** BravesChat
-- **Versión:** 2.4.6
+- **Versión:** 2.5.0
 - **Descripción:** Plugin profesional de chat para WordPress con integración a N8N, soporte de horarios, cumplimiento GDPR, personalización avanzada y estadísticas de conversaciones.
 - **Autor:** Carlos Vera (BravesLab)
 - **Repositorio:** Carlos-Vera/BravesChat
@@ -97,7 +97,7 @@ No se requiere compilación (Vanilla JS/CSS).
     - `readme.txt` — `Stable tag:`, sección `== Changelog ==` y `== Upgrade Notice ==` ⚠️ WordPress lo usa para detectar actualizaciones. También actualizar `== Description ==` si se añade una feature notable, y `== Screenshots ==` si cambian las capturas (el slug correcto de la carpeta es `braveschat`, no `braves-chat`)
     - `README.md` — actualizar número de versión donde aparezca mencionado
     - `CHANGELOG.md` — índice de versiones + nueva entrada al tope
-    - `includes/admin/templates/about.php` — nuevo `<div class="braves-timeline__item braves-tl-left|braves-tl-right" data-tl-item>` en `[data-tl-source]`. Especificar la clase `braves-tl-left` o `braves-tl-right` manualmente. No añadir `style="--braves-tl-nudge:..."` ni clases `braves-tl-mt-*`.
+    - `includes/admin/templates/about.php` — nuevo `<div class="braves-timeline__item">` al tope del timeline (justo bajo el cap "Today"), **sin** `data-tl-item`, y añadir `data-tl-item` al ítem que antes era el más reciente. Estructura interna: `.braves-timeline__axis` (con `.braves-timeline__badge` = `vX.Y.Z` y `.braves-timeline__label` = fecha) + `.braves-timeline__card-side` (con `.braves-changelog__version`). El layout es un grid fijo de 2 columnas (`axis` → col 1, `card-side` → col 2) con `grid-row:1` que **ignora el orden del HTML**, así que NO hay clases de lado (`braves-tl-left/right` ya no existen) ni `--braves-tl-nudge` ni márgenes manuales. La posición se resuelve sola por CSS.
     - `CLAUDE.md` — campo `Versión:` en Información General
     - `memory/MEMORY.md` — versión actual y cambios clave
     - `braves_chat.php` método `plugin_api_info()` — actualizar `$plugin->active_installs`

@@ -6,7 +6,8 @@ Todas las fechas en formato YYYY-MM-DD. Este proyecto sigue [Semantic Versioning
 
 ## 📋 Índice de Versiones
 
-- [2.4.6](#246---2026-04-16) - **Actual** - Seguridad XSS, traducciones del historial, versículos en inglés y timeline automático
+- [2.5.0](#250---2026-06-13) - **Actual** - Compatibilidad WordPress 7.0, bloque con block.json apiVersion 3, preview en insertador y fix de notices en Historial
+- [2.4.6](#246---2026-04-16) - Seguridad XSS, traducciones del historial, versículos en inglés y timeline automático
 - [2.4.5](#245---2026-04-15) - Versículos locales, UI traducida al inglés y correcciones de seguridad
 - [2.4.4](#244---2026-04-12) - Internacionalización completa: 481 strings traducibles, soporte JS i18n y archivos de idioma para es_ES
 - [2.4.3](#243---2026-04-12) - Modo Mixto de visualización y correcciones CSS para iOS Safari dark mode
@@ -40,6 +41,28 @@ Todas las fechas en formato YYYY-MM-DD. Este proyecto sigue [Semantic Versioning
 - [1.1.1](#111---2025-10-16) - Sistema de cookies y fingerprinting
 - [1.1.0](#110---2025-10-01) - Horarios y páginas excluidas
 - [1.0.0](#100---2025-09-15) - Lanzamiento inicial
+
+---
+
+## [2.5.0] - 2026-06-13
+
+### 🔧 Mejoras Técnicas
+- **IMPROVED**: Bloque Gutenberg `braves/chat-widget` migrado a `block.json` con `apiVersion: 3`. En WordPress 7.0, el bloque ya no des-iframea el editor de bloques al insertarse.
+- **IMPROVED**: Dependencia del script del editor `wp-editor` (obsoleto en WP 7.0) reemplazada por `wp-block-editor`. Los handles del bloque se registran ahora en el hook `init`.
+- **IMPROVED**: Eliminada la función `ensure_block_files()` que escribía archivos en el directorio del plugin en tiempo de ejecución (marcada por Plugin Check).
+- **IMPROVED**: Añadida la clave `example` al registro del bloque — el insertador de bloques muestra ahora una vista previa en lugar de "Vista previa no disponible".
+- **IMPROVED**: `extract()` en `includes/class_frontend.php` reemplazado por asignaciones explícitas de variables (buena práctica, marcado por Plugin Check).
+
+### 📋 Requisitos
+- **IMPROVED**: `Requires at least` bumpeado de 5.8 a 5.9. El panel Apariencia usa `wp_get_global_settings()`, disponible desde WP 5.9.
+- **IMPROVED**: `Tested up to` actualizado a 7.0.
+
+### 🐛 Correcciones
+- **FIXED**: La pestaña Historial aparecía en blanco cuando el webhook no estaba configurado. La regla CSS `.braves-chat-admin-page .notice:not(.braves-notice){display:none}` ocultaba los avisos propios del plugin. Solución: clase `braves-notice` añadida a los notices de `history.php`.
+
+### 🧹 Limpieza
+- **CHORE**: Backups `languages/*.po~` eliminados del repositorio.
+- **CHORE**: Patrón `*.po~` añadido a `.distignore` para excluirlos del ZIP de release.
 
 ---
 
